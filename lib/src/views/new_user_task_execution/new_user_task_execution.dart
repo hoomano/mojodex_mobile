@@ -62,7 +62,7 @@ class _NewUserTaskExecutionState extends State<NewUserTaskExecution> {
                                       () {}); // to rebuild after user_tasks reload
                                 },
                                 pushWithReplacement:
-                                    User().userTaskExecutionsHistory.isEmpty))
+                                    User().userTaskExecutionsHistory.isNotEmpty))
                             .toList()),
               );
             }),

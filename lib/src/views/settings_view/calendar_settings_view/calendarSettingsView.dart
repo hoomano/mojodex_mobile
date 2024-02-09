@@ -137,8 +137,19 @@ class CalendarTile extends StatefulWidget {
 class _CalendarTileState extends State<CalendarTile> {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     bool isAuthorized =
         CalendarManager().calendarIsAuthorized(widget.calendar.id!);
+    Color textColor;
+    if (isAuthorized) {
+      textColor = themeProvider.themeMode == ThemeMode.dark
+          ? ds.DesignColor.grey.grey_1
+          : ds.DesignColor.grey.grey_9;
+    } else {
+      textColor = themeProvider.themeMode == ThemeMode.dark
+          ? ds.DesignColor.grey.grey_3
+          : ds.DesignColor.grey.grey_3;
+    }
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: Color(widget.calendar.color!),
@@ -148,9 +159,7 @@ class _CalendarTileState extends State<CalendarTile> {
         widget.calendar.name!,
         style: TextStyle(
           fontSize: ds.TextFontSize.body2,
-          color: isAuthorized
-              ? ds.DesignColor.grey.grey_9
-              : ds.DesignColor.grey.grey_3,
+          color: textColor,
         ),
       ),
       trailing: Switch(

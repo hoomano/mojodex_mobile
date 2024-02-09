@@ -32,10 +32,12 @@ If building on IOS,
 cd ios
 pod install
 pod update
+cd ..
 ```
 
 STEP 3: Set up your BACKEND_URI in the .env file
 ```
+cd assets
 cp .env.example .env
 ```
 Edit the .env file and set your IP address:
@@ -45,8 +47,11 @@ BACKEND_URI="http://<your_ip_address>:5001"
 
 STEP 4: Run the Mojodex Mobile App
 ```
+cd ..
 flutter run
 ```
+
+If running on IOS device, you may be prompted to set a development team. Follow the instructions in Xcode to do so.
 
 > 🎉 Congratulations
 >

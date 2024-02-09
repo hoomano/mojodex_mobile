@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mojodex_mobile/src/share_service.dart';
 import 'package:mojodex_mobile/src/views/new_user_task_execution/task_card.dart';
@@ -88,26 +89,28 @@ class _ResultViewState extends State<ResultView> {
   void _onDraftCompleted(BuildContext context) {
     final labelsProvider = Provider.of<SystemLanguage>(context);
     widget.isDrafting = false;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!widget.noDraft && User().notifAllowed == null) {
-        ds.Modal(
-          icon: labelsProvider.getText(
-              key: "userTaskExecution.resultTab.notificationValidation.emoji"),
-          title: labelsProvider.getText(
-              key: "userTaskExecution.resultTab.notificationValidation.title"),
-          textContent: labelsProvider.getText(
-              key:
-                  "userTaskExecution.resultTab.notificationValidation.textContent"),
-          acceptButtonText: labelsProvider.getText(
-              key:
-                  "userTaskExecution.resultTab.notificationValidation.acceptButtonText"),
-          onAccept: () {
-            context.pop();
-            NotificationsManager().askPermission();
-          },
-        ).show(context);
-      }
-    });
+        if (dotenv.env.containsKey('FIREBASE_APP_NAME')) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!widget.noDraft && User().notifAllowed == null) {
+          ds.Modal(
+            icon: labelsProvider.getText(
+                key: "userTaskExecution.resultTab.notificationValidation.emoji"),
+            title: labelsProvider.getText(
+                key: "userTaskExecution.resultTab.notificationValidation.title"),
+            textContent: labelsProvider.getText(
+                key:
+                "userTaskExecution.resultTab.notificationValidation.textContent"),
+            acceptButtonText: labelsProvider.getText(
+                key:
+                "userTaskExecution.resultTab.notificationValidation.acceptButtonText"),
+            onAccept: () {
+              context.pop();
+              NotificationsManager().askPermission();
+            },
+          ).show(context);
+        }
+      });
+    }
   }
 
   @override
