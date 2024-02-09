@@ -6,7 +6,10 @@ Designed to help businesses and individuals with their specific tasks and proces
 ## Prerequisites
 
 To use the Mojodex Mobile App, you must have the Mojodex backend running on your local machine or a remote server.
+
 Follow the instructions in the [Mojodex README](https://github.com/hoomano/mojodex) to set up and run the project.
+
+⚠️ The Mojodex mobile app experience is completely voice interactive. You have to set a WHISPER configuration in Mojodex platform before deploying your backend to use mobile app.
 
 ## Getting Started
 
