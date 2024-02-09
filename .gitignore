@@ -48,3 +48,15 @@ android/app/google-services.json
 
 ios/Runner/pubspec.plist
 ios/firebase_app_id_file.json
+
+# Build files
+android/local.properties
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+assets/.env
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Runner/GeneratedPluginRegistrant.h
+ios/Runner/GeneratedPluginRegistrant.m
+ios/Runner.xcodeproj/*
+ios/Runner.xcodeproj/project.pbxproj
