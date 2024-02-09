@@ -1,11 +1,17 @@
 # MOJODEX MOBILE APP
 
-The Mojodex Mobile App is an open-source mobile application for the Mojodex digital assistant platform.
+The Mojodex Mobile App is an open-source Flutter application, part of the Mojodex digital assistant platform.
+
 Designed to help businesses and individuals with their specific tasks and processes, Mojodex provides a task-oriented, configurable, and personalizable experience on-the-go.
 
 ## Prerequisites
 
-To use the Mojodex Mobile App, you must have the Mojodex backend running on your local machine or a remote server.
+### Flutter
+
+See the [Flutter installation guide](https://flutter.dev/docs/get-started/install) for details on how to install Flutter on your machine.
+
+### Mojodex Backend
+To build and use the Mojodex Mobile App, you must have the Mojodex backend running on your local machine or a remote server.
 
 Follow the instructions in the [Mojodex README](https://github.com/hoomano/mojodex) to set up and run the project.
 
