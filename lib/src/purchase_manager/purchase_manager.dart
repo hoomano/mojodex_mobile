@@ -69,7 +69,6 @@ class PurchaseManager extends ChangeNotifier with HttpCaller {
   Future<void> getProductCategories() async {
     Map<String, dynamic>? categories =
         await get(service: 'product_category', params: '');
-    print(categories);
     if (categories == null) return;
     _productCategories = (categories['product_categories'] as List<dynamic>)
         .map((category) => ProductCategory(
