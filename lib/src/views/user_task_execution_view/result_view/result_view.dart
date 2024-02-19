@@ -4,11 +4,13 @@ import 'package:go_router/go_router.dart';
 import 'package:mojodex_mobile/src/share_service.dart';
 import 'package:mojodex_mobile/src/views/new_user_task_execution/task_card.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/chat_view/voice_message_audio_wave_form.dart';
+import 'package:mojodex_mobile/src/views/user_task_execution_view/result_view/hubspot_form/hubspot_export_form.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/result_view/task_tool_results.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../DS/design_system.dart' as ds;
 import '../../../../DS/theme/themes.dart';
+import '../../../hubspot_manager/hubspot_manager.dart';
 import '../../../models/language/system_language.dart';
 import '../../../models/session/messages/audio_manager.dart';
 import '../../../models/tasks/user_task.dart';
@@ -86,23 +88,43 @@ class _ResultViewState extends State<ResultView> {
     );
   }
 
+  void _sendToHubspot() {
+    HubspotFormManager hubspotFormManager = HubspotFormManager(
+        producedTextVersionPk:
+            widget.userTaskExecution.producedText!.producedTextVersionPk!);
+    // This method opens a bottom sheet with a form
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: HubspotExportForm(hubspotFormManager: hubspotFormManager),
+        );
+      },
+    );
+  }
+
   void _onDraftCompleted(BuildContext context) {
     final labelsProvider = Provider.of<SystemLanguage>(context);
     widget.isDrafting = false;
-        if (dotenv.env.containsKey('FIREBASE_APP_NAME')) {
+    if (dotenv.env.containsKey('FIREBASE_APP_NAME')) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!widget.noDraft && User().notifAllowed == null) {
           ds.Modal(
             icon: labelsProvider.getText(
-                key: "userTaskExecution.resultTab.notificationValidation.emoji"),
+                key:
+                    "userTaskExecution.resultTab.notificationValidation.emoji"),
             title: labelsProvider.getText(
-                key: "userTaskExecution.resultTab.notificationValidation.title"),
+                key:
+                    "userTaskExecution.resultTab.notificationValidation.title"),
             textContent: labelsProvider.getText(
                 key:
-                "userTaskExecution.resultTab.notificationValidation.textContent"),
+                    "userTaskExecution.resultTab.notificationValidation.textContent"),
             acceptButtonText: labelsProvider.getText(
                 key:
-                "userTaskExecution.resultTab.notificationValidation.acceptButtonText"),
+                    "userTaskExecution.resultTab.notificationValidation.acceptButtonText"),
             onAccept: () {
               context.pop();
               NotificationsManager().askPermission();
@@ -226,7 +248,14 @@ class _ResultViewState extends State<ResultView> {
                       key: "userTaskExecution.resultTab.exportButton"),
                   onPressed: !_buttonsEnabled
                       ? null
-                      : () => _shareWith(shareButtonKey))
+                      : () => _shareWith(shareButtonKey)),
+              ds.Button.outline(
+                  backgroundColor: Colors.transparent,
+                  textColor: themeProvider.themeMode == ThemeMode.dark
+                      ? ds.DesignColor.grey.grey_1
+                      : ds.DesignColor.grey.grey_9,
+                  text: "Hubspot",
+                  onPressed: !_buttonsEnabled ? null : () => _sendToHubspot())
             ],
           ),
         ),
