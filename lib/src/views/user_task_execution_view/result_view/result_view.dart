@@ -250,13 +250,15 @@ class _ResultViewState extends State<ResultView> {
                   onPressed: !_buttonsEnabled
                       ? null
                       : () => _shareWith(shareButtonKey)),
-              ds.Button.outline(
-                  backgroundColor: Colors.transparent,
-                  textColor: themeProvider.themeMode == ThemeMode.dark
-                      ? ds.DesignColor.grey.grey_1
-                      : ds.DesignColor.grey.grey_9,
-                  text: "Hubspot",
-                  onPressed: !_buttonsEnabled ? null : () => _sendToHubspot())
+              if (dotenv.env.containsKey('HUBSPOT_BUTTON') &&
+                  dotenv.env["HUBSPOT_BUTTON"] == "true")
+                ds.Button.outline(
+                    backgroundColor: Colors.transparent,
+                    textColor: themeProvider.themeMode == ThemeMode.dark
+                        ? ds.DesignColor.grey.grey_1
+                        : ds.DesignColor.grey.grey_9,
+                    text: "Hubspot",
+                    onPressed: !_buttonsEnabled ? null : () => _sendToHubspot())
             ],
           ),
         ),
