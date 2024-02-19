@@ -18,10 +18,18 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
   bool _sending = false;
   bool _successfullSent = false;
   TextEditingController _textController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.requestFocus();
+  }
 
   @override
   void dispose() {
     _textController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -64,6 +72,9 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
                         color: textColor,
                       )),
                   DropdownButton<String>(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(_focusNode);
+                    },
                     value: widget.hubspotFormManager.engagementType,
                     items: HubspotFormManager.availableEngagementTypes
                         .map((engagementType) => DropdownMenuItem(
@@ -79,6 +90,7 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
                       setState(() {
                         widget.hubspotFormManager.engagementType = value!;
                       });
+                      FocusScope.of(context).requestFocus(_focusNode);
                     },
                   ),
                   Text(' in',
@@ -99,6 +111,9 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
                     setState(() {
                       widget.hubspotFormManager.selectedObjectType = null;
                       widget.hubspotFormManager.associatedObject = null;
+                      widget.hubspotFormManager.clearSuggestions();
+                      // remove focus from textfield
+                      FocusScope.of(context).requestFocus(FocusNode());
                     });
                   }, onSelected: (HubspotObjectType value) {
                     setState(() {
@@ -108,7 +123,8 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
                       textController: selectedObjectType == objectType
                           ? _textController
                           : null,
-                      focus: selectedObjectType == objectType);
+                      focusNode:
+                          selectedObjectType == objectType ? _focusNode : null);
                 }
                 return Container();
               }))

@@ -10,14 +10,14 @@ class AssociatedObjectTile extends StatefulWidget {
   Function onSelected;
   Function onSubmitted;
   TextEditingController? textController;
-  late final FocusNode focusNode = FocusNode();
+  FocusNode? focusNode;
   AssociatedObjectTile(this.object, this.hubspotFormManager,
       {required this.onSubmitted,
       required this.onSelected,
       this.textController,
-      bool focus = false}) {
-    if (focus) {
-      focusNode.requestFocus();
+      this.focusNode}) {
+    if (focusNode != null) {
+      focusNode!.requestFocus();
     }
   }
   HubspotObjectType object;
@@ -27,17 +27,6 @@ class AssociatedObjectTile extends StatefulWidget {
 }
 
 class _AssociatedObjectTileState extends State<AssociatedObjectTile> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    widget.focusNode.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -50,56 +39,64 @@ class _AssociatedObjectTileState extends State<AssociatedObjectTile> {
         mainAxisSize: MainAxisSize.min, // Set to min to wrap content
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextField(
-            focusNode: widget.focusNode,
-            controller: widget.textController,
-            readOnly: widget.hubspotFormManager.associatedObject != null,
-            style: TextStyle(
-              color: textColor,
-              fontSize: ds.TextFontSize.body2,
-            ),
-            cursorColor: ds.DesignColor.primary.main,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: ds.DesignColor.grey.grey_5),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: ds.DesignColor.primary.main),
-              ),
-              labelText: widget.object.singularName,
-              labelStyle: TextStyle(
+          Focus(
+            onFocusChange: (focused) {
+              setState(() {
+                FocusScope.of(context).requestFocus(widget.focusNode);
+              });
+            },
+            child: TextField(
+              focusNode: widget.focusNode,
+              controller: widget.textController,
+              readOnly: widget.hubspotFormManager.associatedObject != null,
+              style: TextStyle(
                 color: textColor,
                 fontSize: ds.TextFontSize.body2,
               ),
-              // icon at the end
-              suffixIcon: Visibility(
-                visible: widget.hubspotFormManager.associatedObject != null,
-                child: IconButton(
-                  icon: ds.DesignIcon.closeSM(
-                      size: ds.TextFontSize.body2, color: textColor),
-                  onPressed: () {
-                    setState(() {
-                      widget.textController?.clear();
-                      widget.hubspotFormManager.associatedObject = null;
-                    });
-                  },
+              cursorColor: ds.DesignColor.primary.main,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: ds.DesignColor.grey.grey_5),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: ds.DesignColor.primary.main),
+                ),
+                labelText: widget.object.singularName,
+                labelStyle: TextStyle(
+                  color: textColor,
+                  fontSize: ds.TextFontSize.body2,
+                ),
+                // icon at the end
+                suffixIcon: Visibility(
+                  visible: widget.hubspotFormManager.associatedObject != null,
+                  child: IconButton(
+                    icon: ds.DesignIcon.closeSM(
+                        size: ds.TextFontSize.body2, color: textColor),
+                    onPressed: () {
+                      setState(() {
+                        widget.textController?.clear();
+                        widget.hubspotFormManager.associatedObject = null;
+                        widget.hubspotFormManager.clearSuggestions();
+                      });
+                    },
+                  ),
                 ),
               ),
+              onSubmitted: (String value) {
+                widget.textController?.clear();
+                widget.onSubmitted();
+              },
+              onTap: () {
+                if (widget.hubspotFormManager.selectedObjectType == null) {
+                  widget.onSelected(widget.object);
+                }
+              },
+              onChanged: (String value) {
+                if (widget.hubspotFormManager.associatedObject == null) {
+                  widget.hubspotFormManager.search(value, widget.object);
+                }
+              },
             ),
-            onSubmitted: (String value) {
-              widget.textController?.clear();
-              widget.onSubmitted();
-            },
-            onTap: () {
-              if (widget.hubspotFormManager.selectedObjectType == null) {
-                widget.onSelected(widget.object);
-              }
-            },
-            onChanged: (String value) {
-              if (widget.hubspotFormManager.associatedObject == null) {
-                widget.hubspotFormManager.search(value, widget.object);
-              }
-            },
           ),
           if (widget.hubspotFormManager.selectedObjectType != null)
             SizedBox(

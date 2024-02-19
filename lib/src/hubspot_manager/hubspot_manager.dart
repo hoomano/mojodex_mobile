@@ -82,6 +82,10 @@ class HubspotFormManager with HttpCaller {
   List<HubspotObject> _suggestions = [];
   List<HubspotObject> get suggestions => _suggestions;
 
+  void clearSuggestions() {
+    _suggestions = [];
+  }
+
   final ValueNotifier<bool> _searchingNotifier = ValueNotifier(false);
   ValueNotifier<bool> get searchingNotifier => _searchingNotifier;
 
