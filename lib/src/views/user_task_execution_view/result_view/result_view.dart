@@ -96,6 +96,7 @@ class _ResultViewState extends State<ResultView> {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return Padding(
           padding:

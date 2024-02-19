@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/models/http_caller.dart';
+
+import '../views/user_task_execution_list/search_bar/search_bar.dart';
 
 enum HubspotObjectType {
   company,
@@ -76,34 +79,45 @@ class HubspotFormManager with HttpCaller {
 
   String? engagementType = availableEngagementTypes.first;
 
-  Future<List<HubspotObject>> search(
-      String query, HubspotObjectType lookupObject) async {
-    // Call the actual search method with the given query and
-    // process the response. This might depend on your actual implementation.
-    // Here I assumed it returns a list of strings.
-    String params =
-        "search_type=${lookupObject.pluralName}&search_string=$query";
-    Map<String, dynamic>? data =
-        await get(service: 'hubspot_export', params: params);
-    if (data == null) {
-      return [];
-    }
-    if (lookupObject == HubspotObjectType.company) {
-      return data['results']
-          .map<HubspotObject>((e) => Company(name: e['name'], id: e['id']))
-          .toList();
-    }
-    if (lookupObject == HubspotObjectType.contact) {
-      return data['results']
-          .map<HubspotObject>((e) => Contact(name: e['name'], id: e['id']))
-          .toList();
-    }
-    if (lookupObject == HubspotObjectType.deal) {
-      return data['results']
-          .map<HubspotObject>((e) => Deal(name: e['name'], id: e['id']))
-          .toList();
-    }
-    return [];
+  List<HubspotObject> _suggestions = [];
+  List<HubspotObject> get suggestions => _suggestions;
+
+  final ValueNotifier<bool> _searchingNotifier = ValueNotifier(false);
+  ValueNotifier<bool> get searchingNotifier => _searchingNotifier;
+
+  final debouncer = Debouncer(milliseconds: 500);
+
+  Future<void> search(String query, HubspotObjectType lookupObject) async {
+    debouncer.run(() async {
+      _searchingNotifier.value = true;
+      // Call the actual search method with the given query and
+      // process the response. This might depend on your actual implementation.
+      // Here I assumed it returns a list of strings.
+      String params =
+          "search_type=${lookupObject.pluralName}&search_string=$query";
+      Map<String, dynamic>? data =
+          await get(service: 'hubspot_export', params: params);
+      if (data == null) {
+        _suggestions = [];
+        return;
+      }
+      if (lookupObject == HubspotObjectType.company) {
+        _suggestions = data['results']
+            .map<HubspotObject>((e) => Company(name: e['name'], id: e['id']))
+            .toList();
+      }
+      if (lookupObject == HubspotObjectType.contact) {
+        _suggestions = data['results']
+            .map<HubspotObject>((e) => Contact(name: e['name'], id: e['id']))
+            .toList();
+      }
+      if (lookupObject == HubspotObjectType.deal) {
+        _suggestions = data['results']
+            .map<HubspotObject>((e) => Deal(name: e['name'], id: e['id']))
+            .toList();
+      }
+      _searchingNotifier.value = false;
+    });
   }
 
   Future<bool> send() async {

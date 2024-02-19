@@ -28,10 +28,21 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+
+    final textColor = themeProvider.themeMode == ThemeMode.dark
+        ? ds.DesignColor.grey.grey_1
+        : ds.DesignColor.grey.grey_9;
     return Container(
-      color: themeProvider.themeMode == ThemeMode.dark
-          ? ds.DesignColor.grey.grey_9
-          : ds.DesignColor.white,
+      decoration: BoxDecoration(
+        color: themeProvider.themeMode == ThemeMode.dark
+            ? ds.DesignColor.grey.grey_7
+            : ds.DesignColor.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.0),
+          topRight: Radius.circular(30.0),
+        ),
+      ),
+
       //height: MediaQuery.of(context).size.height * 0.75,
       width: double.infinity,
       child: SingleChildScrollView(
@@ -39,15 +50,19 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
           padding: const EdgeInsets.all(ds.Spacing.largePadding),
           child: Column(
             children: [
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(ds.Spacing.mediumPadding),
                 child: Text('Hubspot',
-                    style: TextStyle(fontSize: ds.TextFontSize.h2)),
+                    style: TextStyle(
+                        fontSize: ds.TextFontSize.h2, color: textColor)),
               ),
               Row(
                 children: [
-                  const Text('Save as ',
-                      style: TextStyle(fontSize: ds.TextFontSize.body2)),
+                  Text('Save as ',
+                      style: TextStyle(
+                        fontSize: ds.TextFontSize.body2,
+                        color: textColor,
+                      )),
                   DropdownButton<String>(
                     value: widget.hubspotFormManager.engagementType,
                     items: HubspotFormManager.availableEngagementTypes
@@ -55,7 +70,9 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
                               value: engagementType,
                               child: Text(engagementType,
                                   style: TextStyle(
-                                      fontSize: ds.TextFontSize.body2)),
+                                    fontSize: ds.TextFontSize.body2,
+                                    color: textColor,
+                                  )),
                             ))
                         .toList(),
                     onChanged: (String? value) {
@@ -64,8 +81,11 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
                       });
                     },
                   ),
-                  const Text(' in',
-                      style: TextStyle(fontSize: ds.TextFontSize.body2)),
+                  Text(' in',
+                      style: TextStyle(
+                        fontSize: ds.TextFontSize.body2,
+                        color: textColor,
+                      )),
                 ],
               ),
             ]
