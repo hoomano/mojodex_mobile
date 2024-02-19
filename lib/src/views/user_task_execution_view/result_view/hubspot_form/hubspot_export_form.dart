@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../DS/design_system.dart' as ds;
 import '../../../../../DS/theme/themes.dart';
+import '../../../../models/language/system_language.dart';
 import 'object_association_tiles.dart';
 
 class HubspotExportForm extends StatefulWidget {
@@ -36,7 +37,7 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-
+    final labelsProvider = Provider.of<SystemLanguage>(context);
     final textColor = themeProvider.themeMode == ThemeMode.dark
         ? ds.DesignColor.grey.grey_1
         : ds.DesignColor.grey.grey_9;
@@ -50,8 +51,6 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
           topRight: Radius.circular(30.0),
         ),
       ),
-
-      //height: MediaQuery.of(context).size.height * 0.75,
       width: double.infinity,
       child: SingleChildScrollView(
         child: Padding(
@@ -66,7 +65,10 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
               ),
               Row(
                 children: [
-                  Text('Save as ',
+                  Text(
+                      labelsProvider.getText(
+                          key:
+                              "userTaskExecution.resultTab.hubspotIntegration.saveAs"),
                       style: TextStyle(
                         fontSize: ds.TextFontSize.body2,
                         color: textColor,
@@ -93,7 +95,10 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
                       FocusScope.of(context).requestFocus(_focusNode);
                     },
                   ),
-                  Text(' in',
+                  Text(
+                      labelsProvider.getText(
+                          key:
+                              "userTaskExecution.resultTab.hubspotIntegration.in"),
                       style: TextStyle(
                         fontSize: ds.TextFontSize.body2,
                         color: textColor,
@@ -149,7 +154,9 @@ class _HubspotExportFormState extends State<HubspotExportForm> {
                                     ? 0.5
                                     : 1.0,
                             child: ds.Button.fill(
-                              text: "Export",
+                              text: labelsProvider.getText(
+                                  key:
+                                      "userTaskExecution.resultTab.exportButton"),
                               onPressed: () async {
                                 if (widget
                                         .hubspotFormManager.associatedObject ==

@@ -91,16 +91,17 @@ class HubspotFormManager with HttpCaller {
 
   final debouncer = Debouncer(milliseconds: 500);
 
-  Future<void> search(String query, HubspotObjectType lookupObject) async {
+  Future<void> search(String query, HubspotObjectType lookupObject,
+      {int nResults = 10}) async {
     debouncer.run(() async {
       _searchingNotifier.value = true;
       // Call the actual search method with the given query and
       // process the response. This might depend on your actual implementation.
       // Here I assumed it returns a list of strings.
       String params =
-          "search_type=${lookupObject.pluralName}&search_string=$query";
+          "search_type=${lookupObject.pluralName}&search_string=$query&n_results=$nResults";
       Map<String, dynamic>? data =
-          await get(service: 'hubspot_export', params: params);
+          await get(service: 'integrations/hubspot', params: params);
       if (data == null) {
         _suggestions = [];
         return;
@@ -133,7 +134,7 @@ class HubspotFormManager with HttpCaller {
     };
 
     Map<String, dynamic>? data =
-        await put(service: 'hubspot_export', body: body);
+        await put(service: 'integrations/hubspot', body: body);
 
     return data != null;
   }
