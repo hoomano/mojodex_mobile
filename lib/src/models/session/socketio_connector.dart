@@ -142,7 +142,9 @@ class SocketioConnector {
           _getSessionFromId(data['session_id']) as TaskSession?;
       session?.onDraftToken(data);
     } catch (e) {
-      logger.shout("Error in draft token callback: $e");
+      // If this doesn't work, probably the session is not a task session
+      // let's stream it as a Mojo Message
+      _mojoTokenCallback(data);
     }
   }
 
@@ -153,7 +155,9 @@ class SocketioConnector {
           _getSessionFromId(data[0]['session_id']) as TaskSession?;
       session?.onReceivedDraft(data);
     } catch (e) {
-      logger.shout("Error in draft message callback: $e");
+      // If this doesn't work, probably the session is not a task session
+      // let's write it as a Mojo Message
+      _mojoMessageCallback(data);
     }
   }
 

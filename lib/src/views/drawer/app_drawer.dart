@@ -8,6 +8,7 @@ import '../../../DS/design_system.dart' as ds;
 import '../../../DS/theme/themes.dart';
 import '../../models/language/system_language.dart';
 import '../../models/user/user.dart';
+import '../home_screen/home_screen.dart';
 import '../settings_view/settings_view.dart';
 import '../todos_view/todos_view.dart';
 import '../widgets/profile_picture.dart';
@@ -33,6 +34,13 @@ class AppDrawer extends StatelessWidget {
                   left: ds.Spacing.smallPadding, top: ds.Spacing.mediumPadding),
               children: [
                 DrawerPageItem(
+                    icon: Icon(
+                      Icons.home_outlined,
+                      color: ds.DesignColor.grey.grey_1,
+                    ),
+                    title: "Home",
+                    routeToGo: HomeScreen.routeName),
+                DrawerPageItem(
                     icon: ds.DesignIcon.addPlus(
                       size: ds.TextFontSize.body1,
                     ),
@@ -46,6 +54,9 @@ class AppDrawer extends StatelessWidget {
                     ),
                     title:
                         labelsProvider.getText(key: "appDrawer.taskListButton"),
+                    beforeNavigate: () {
+                      User().userTaskExecutionsHistory.refreshLocalList();
+                    },
                     routeToGo: !User().userTaskExecutionsHistory.loading &&
                             User().userTaskExecutionsHistory.isEmpty &&
                             User()

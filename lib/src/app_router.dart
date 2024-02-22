@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
+import 'package:mojodex_mobile/src/views/home_screen/home_screen.dart';
 import 'package:mojodex_mobile/src/views/login_view/signin.dart';
 import 'package:mojodex_mobile/src/views/login_view/signup.dart';
 import 'package:mojodex_mobile/src/views/new_user_task_execution/new_user_task_execution.dart';
@@ -28,7 +29,8 @@ class AppRouter {
 
   factory AppRouter() => _instance;
 
-  String initialLocation = '/${UserTaskExecutionsListView.routeName}';
+  String initialLocation =
+      "/${HomeScreen.routeName}"; //'/${UserTaskExecutionsListView.routeName}';
 
   late GoRouter _goRouter;
   GoRouter get goRouter => _goRouter;
@@ -37,6 +39,12 @@ class AppRouter {
     _goRouter = GoRouter(
       initialLocation: initialLocation,
       routes: [
+        GoRoute(
+            path: "/${HomeScreen.routeName}",
+            name: HomeScreen.routeName,
+            builder: (context, state) {
+              return HomeScreen();
+            }),
         GoRoute(
           path: '/${UserTaskExecutionsListView.routeName}',
           name: UserTaskExecutionsListView.routeName,

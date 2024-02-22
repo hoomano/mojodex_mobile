@@ -17,6 +17,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../microphone.dart';
 import '../../purchase_manager/purchase_manager.dart';
 import '../calendar_manager/calendar_manager.dart';
+import '../home_chat/home_chat.dart';
 import '../status_bar/calendar_suggestion.dart';
 import '../tasks/user_task_executions_history.dart';
 import '../tasks/user_tasks_list.dart';
@@ -100,6 +101,8 @@ class User extends ChangeNotifier with HttpCaller {
       bool presented = result is Future<bool> ? await result : result;
       if (!presented) {
         await purchaseManager.getProductCategories();
+      } else {
+        await HomeChat().init();
       }
       _isLoggedIn = true;
       notifyListeners();
@@ -237,6 +240,9 @@ class User extends ChangeNotifier with HttpCaller {
   Future<Map<String, dynamic>?> acceptTermsAndConditions() async {
     Map<String, dynamic>? response =
         await put(service: 'terms_and_conditions', body: {});
+    if (response != null) {
+      await HomeChat().init();
+    }
     return response;
   }
 
