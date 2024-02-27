@@ -92,6 +92,7 @@ class UserTaskExecution extends SerializableDataItem
       String? placeholderBody})
       : super(userTaskExecutionPk) {
     session = TaskSession(
+        userTaskExecutionPk: userTaskExecutionPk,
         sessionId: sessionId,
         onReceivedNewDraft: (producedText) => this.producedText = producedText,
         onReceivedUserTaskExecutionTitle: (title) => this.title = title,
@@ -164,6 +165,7 @@ class UserTaskExecution extends SerializableDataItem
         : DateTime.now();
     endDate = DateTime.tryParse(data['end_date'].toString());
     session = TaskSession(
+        userTaskExecutionPk: pk!,
         sessionId: data['session_id'],
         onReceivedNewDraft: (producedText) => this.producedText = producedText,
         onReceivedUserTaskExecutionTitle: (title) => this.title = title,

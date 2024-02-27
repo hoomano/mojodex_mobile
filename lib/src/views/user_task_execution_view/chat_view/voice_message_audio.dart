@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/models/session/messages/audio_manager.dart';
-import 'package:mojodex_mobile/src/models/session/messages/mojo_message.dart';
-import 'package:mojodex_mobile/src/models/user/user.dart';
-import 'package:mojodex_mobile/src/views/new_user_task_execution/task_card.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/chat_view/voice_message_audio_wave_form.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/chat_view/voice_message_check.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/chat_view/voice_message_text.dart';
@@ -109,21 +106,6 @@ class VoiceMessageAudio extends StatelessWidget {
                       streaming: streaming)
                   : const SizedBox.shrink(),
               audioWaveForm,
-              if (message is MojoMessage &&
-                  (message as MojoMessage).suggestedTaskPk != null)
-                TaskCard(
-                    pushWithReplacement: false,
-                    navigateAsGo: false,
-                    userTask: User().userTasksList.getUserTaskFromTaskPk(
-                        (message as MojoMessage).suggestedTaskPk!)!,
-                    onProcessingChanged: () {},
-                    onBackFromPlanPage: () {},
-                    userTaskExecutionPlaceholderHeader: (message as MojoMessage)
-                        .suggestedTaskPlaceholderQuestion,
-                    userTaskExecutionPlaceholderBody: (message as MojoMessage)
-                        .suggestedTaskPlaceholderInstruction,
-                    firstMessageText:
-                        (message as MojoMessage).suggestedTaskFirstMessage),
               if (message.sentByUser) VoiceMessageCheck(active: message.acked)
             ],
           );
