@@ -22,77 +22,102 @@ class HomeScreen extends StatelessWidget {
         appBarTitle: "Home",
         safeAreaOverflow: false,
         drawer: AppDrawer(),
-        body: HomeChat().inError
-            ? Padding(
-                padding: const EdgeInsets.all(ds.Spacing.mediumPadding),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      HomeChat().initialMessageHeader,
-                      style: TextStyle(
-                          color: themeProvider.themeMode == ThemeMode.dark
-                              ? ds.DesignColor.white
-                              : ds.DesignColor.grey.grey_5,
-                          fontWeight: FontWeight.bold,
-                          fontSize: ds.TextFontSize.h4),
-                      textAlign: TextAlign.center,
-                    ),
-                    ds.Space.verticalLarge,
-                    Text(HomeChat().initialMessageBody,
-                        style: TextStyle(
-                            color: themeProvider.themeMode == ThemeMode.dark
-                                ? ds.DesignColor.white
-                                : ds.DesignColor.grey.grey_7,
-                            fontSize: ds.TextFontSize.body1),
-                        textAlign: TextAlign.center),
-                    ds.Space.verticalLarge,
-                  ],
-                ))
-            : ChangeNotifierProvider<Session>.value(
-                value: HomeChat().session,
-                child: Consumer<Session>(builder:
-                    (BuildContext context, Session session, Widget? child) {
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: session.messages.length == 1
-                            ? Padding(
+        body: FutureBuilder(
+            future: HomeChat().refresh(),
+            builder: (context, AsyncSnapshot snapshot) {
+              return HomeChat().inError
+                  ? Padding(
+                      padding: const EdgeInsets.all(ds.Spacing.mediumPadding),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            HomeChat().initialMessageHeader,
+                            style: TextStyle(
+                                color: themeProvider.themeMode == ThemeMode.dark
+                                    ? ds.DesignColor.white
+                                    : ds.DesignColor.grey.grey_5,
+                                fontWeight: FontWeight.bold,
+                                fontSize: ds.TextFontSize.h4),
+                            textAlign: TextAlign.center,
+                          ),
+                          ds.Space.verticalLarge,
+                          Text(HomeChat().initialMessageBody,
+                              style: TextStyle(
+                                  color:
+                                      themeProvider.themeMode == ThemeMode.dark
+                                          ? ds.DesignColor.white
+                                          : ds.DesignColor.grey.grey_7,
+                                  fontSize: ds.TextFontSize.body1),
+                              textAlign: TextAlign.center),
+                          ds.Space.verticalLarge,
+                        ],
+                      ))
+                  : ChangeNotifierProvider<Session>.value(
+                      value: HomeChat().session,
+                      child: Consumer<Session>(builder: (BuildContext context,
+                          Session session, Widget? child) {
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: session.messages.length == 1
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(
+                                          ds.Spacing.mediumPadding),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            HomeChat().initialMessageHeader,
+                                            style: TextStyle(
+                                                color:
+                                                    themeProvider.themeMode ==
+                                                            ThemeMode.dark
+                                                        ? ds.DesignColor.white
+                                                        : ds.DesignColor.grey
+                                                            .grey_5,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: ds.TextFontSize.h4),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          ds.Space.verticalLarge,
+                                          Text(HomeChat().initialMessageBody,
+                                              style: TextStyle(
+                                                  color:
+                                                      themeProvider.themeMode ==
+                                                              ThemeMode.dark
+                                                          ? ds.DesignColor.white
+                                                          : ds.DesignColor.grey
+                                                              .grey_7,
+                                                  fontSize:
+                                                      ds.TextFontSize.body1),
+                                              textAlign: TextAlign.center),
+                                          ds.Space.verticalLarge,
+                                        ],
+                                      ))
+                                  : MessagesList(
+                                      session: session,
+                                      onResubmit: session.reSubmit),
+                            ),
+                            ChatBottomBar(session: session),
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting)
+                              Padding(
                                 padding: const EdgeInsets.all(
-                                    ds.Spacing.mediumPadding),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      HomeChat().initialMessageHeader,
-                                      style: TextStyle(
-                                          color: themeProvider.themeMode ==
-                                                  ThemeMode.dark
-                                              ? ds.DesignColor.white
-                                              : ds.DesignColor.grey.grey_5,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: ds.TextFontSize.h4),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    ds.Space.verticalLarge,
-                                    Text(HomeChat().initialMessageBody,
-                                        style: TextStyle(
-                                            color: themeProvider.themeMode ==
-                                                    ThemeMode.dark
-                                                ? ds.DesignColor.white
-                                                : ds.DesignColor.grey.grey_7,
-                                            fontSize: ds.TextFontSize.body1),
-                                        textAlign: TextAlign.center),
-                                    ds.Space.verticalLarge,
-                                  ],
-                                ))
-                            : MessagesList(
-                                session: session, onResubmit: session.reSubmit),
-                      ),
-                      ChatBottomBar(session: session)
-                    ],
-                  );
-                }),
-              ));
+                                    ds.Spacing.smallPadding),
+                                child: LinearProgressIndicator(
+                                  color: ds.DesignColor.primary.main,
+                                  backgroundColor:
+                                      themeProvider.themeMode == ThemeMode.dark
+                                          ? ds.DesignColor.grey.grey_7
+                                          : ds.DesignColor.grey.grey_3,
+                                ),
+                              )
+                          ],
+                        );
+                      }),
+                    );
+            }));
   }
 }

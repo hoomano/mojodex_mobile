@@ -112,6 +112,7 @@ class Session extends ChangeNotifier with HttpCaller {
     if (data is Map && data.containsKey('text')) {
       _mojoTokenController.add(data['text']);
       onGoingMojoMessage = data['text'];
+      _waitingForMojo = true;
     }
   }
 

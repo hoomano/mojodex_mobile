@@ -7,7 +7,7 @@ import '../session/messages/audio_manager.dart';
 import '../session/session.dart';
 
 class HomeChat with HttpCaller {
-  final Logger logger = Logger('v');
+  final Logger logger = Logger('HomeChat');
 
   // Unique instance of the class
   static final HomeChat _instance = HomeChat.privateConstructor();
@@ -23,6 +23,12 @@ class HomeChat with HttpCaller {
 
   late String initialMessageHeader;
   late String initialMessageBody;
+
+  bool _initialized = false;
+  bool get initialized => _initialized;
+
+  bool _refreshing = false;
+  bool get refreshing => _refreshing;
 
   bool inError = false;
 
@@ -55,6 +61,7 @@ class HomeChat with HttpCaller {
           text: homeChatData['message']['text']);
       message.audioManager = AudioManager(getAudioFile: message.getVoice);
       session.messages.add(message);
+      _initialized = true;
     } catch (e) {
       logger.severe('Error initializing HomeChat: $e');
       inError = true;
@@ -69,6 +76,17 @@ class HomeChat with HttpCaller {
       post(service: 'home_chat', body: {});
     } catch (e) {
       logger.severe('Error terminating HomeChat: $e');
+    }
+  }
+
+  Future<void> refresh() async {
+    try {
+      if (refreshing || !_initialized) return;
+      _refreshing = true;
+      //await session.loadMoreMessages(nMessages: 10, loadOlder: false);
+      _refreshing = false;
+    } catch (e) {
+      logger.severe('Error refreshing HomeChat: $e');
     }
   }
 }

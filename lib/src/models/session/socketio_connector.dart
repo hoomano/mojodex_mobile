@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/models/session/session.dart';
@@ -29,9 +28,10 @@ class SocketioConnector {
 
   List<Session> activeSessions = [];
 
-  Session? _getSessionFromId(String sessionId) {
+  List<Session> _getSessionFromId(String sessionId) {
     return activeSessions
-        .firstWhereOrNull((element) => element.sessionId == sessionId);
+        .where((element) => element.sessionId == sessionId)
+        .toList();
   }
 
   /// List of all the events to listen
@@ -107,8 +107,10 @@ class SocketioConnector {
       return;
     }
     try {
-      Session? session = _getSessionFromId(data['session_id']);
-      session?.onSocketioError(data);
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session session in sessions) {
+        session.onSocketioError(data);
+      }
     } catch (e) {
       logger.shout("Error in error callback: $e");
     }
@@ -117,8 +119,10 @@ class SocketioConnector {
   /// on user message acked callback
   void _userMessageAcked(data) {
     try {
-      Session? session = _getSessionFromId(data['session_id']);
-      session?.onUserMessageAcked(data);
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        s.onUserMessageAcked(data);
+      }
     } catch (e) {
       logger.shout("Error in user message ack callback: $e");
     }
@@ -127,9 +131,15 @@ class SocketioConnector {
   /// on user task execution title callback
   void _userTaskExecutionTitle(data) {
     try {
-      TaskSession? session =
-          _getSessionFromId(data['session_id']) as TaskSession?;
-      session?.onUserTaskExecutionTitle(data);
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        try {
+          TaskSession session = s as TaskSession;
+          session.onUserTaskExecutionTitle(data);
+        } catch (e) {
+          // Do nothing
+        }
+      }
     } catch (e) {
       logger.shout("Error in user_task_execution title callback: $e");
     }
@@ -138,34 +148,49 @@ class SocketioConnector {
   /// on draft token callback
   void _draftTokenCallback(data) {
     try {
-      TaskSession? session =
-          _getSessionFromId(data['session_id']) as TaskSession?;
-      session?.onDraftToken(data);
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        try {
+          TaskSession session = s as TaskSession;
+          session.onDraftToken(data);
+        } catch (e) {
+          // If this doesn't work, probably the session is not a task session
+          // let's stream it as a Mojo Message
+          _mojoTokenCallback(data);
+        }
+      }
     } catch (e) {
-      // If this doesn't work, probably the session is not a task session
-      // let's stream it as a Mojo Message
-      _mojoTokenCallback(data);
+      logger.shout("Error in draft token callback: $e");
     }
   }
 
   /// on draft message callback
   void _draftMessageCallback(data) {
     try {
-      TaskSession? session =
-          _getSessionFromId(data[0]['session_id']) as TaskSession?;
-      session?.onReceivedDraft(data);
+      List<Session> sessions = _getSessionFromId(data[0]['session_id']);
+      for (Session s in sessions) {
+        try {
+          TaskSession session = s as TaskSession;
+          session.onReceivedDraft(data);
+        } catch (e) {
+          // If this doesn't work, probably the session is not a task session
+          // let's write it as a Mojo Message
+          _mojoMessageCallback(data);
+        }
+      }
     } catch (e) {
-      // If this doesn't work, probably the session is not a task session
-      // let's write it as a Mojo Message
-      _mojoMessageCallback(data);
+      logger.shout("Error in draft message callback: $e");
     }
   }
 
   /// on mojo token callback
   void _mojoTokenCallback(data) {
     try {
-      Session? session = _getSessionFromId(data['session_id']);
-      session?.onMojoToken(data);
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      print("Streaming in ${sessions.length} sessions.");
+      for (Session s in sessions) {
+        s.onMojoToken(data);
+      }
     } catch (e) {
       logger.shout("Error in mojo token callback: $e");
     }
@@ -174,8 +199,10 @@ class SocketioConnector {
   /// on mojo message callback
   void _mojoMessageCallback(data) {
     try {
-      Session? session = _getSessionFromId(data[0]['session_id']);
-      session?.onMojoMessage(data);
+      List<Session> sessions = _getSessionFromId(data[0]['session_id']);
+      for (Session s in sessions) {
+        s.onMojoMessage(data);
+      }
     } catch (e) {
       logger.shout("Error in mojo message callback: $e");
     }
@@ -187,9 +214,15 @@ class SocketioConnector {
 
   void _userTaskExecutionStartCallback(data) async {
     try {
-      TaskSession? session =
-          _getSessionFromId(data['session_id']) as TaskSession?;
-      session?.onUserTaskExecutionStartedCallback(data);
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        try {
+          TaskSession session = s as TaskSession;
+          session.onUserTaskExecutionStartedCallback(data);
+        } catch (e) {
+          //do nothing
+        }
+      }
     } catch (e) {
       logger.shout("Error in user_task_execution start callback: $e");
     }
