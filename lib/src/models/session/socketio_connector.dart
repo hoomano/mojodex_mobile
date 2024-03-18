@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/models/session/session.dart';
 import 'package:mojodex_mobile/src/models/session/task_session.dart';
+import 'package:mojodex_mobile/src/models/session/workflow_session.dart';
 import 'package:mojodex_mobile/src/models/status_bar/calendar_suggestion.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -46,6 +47,10 @@ class SocketioConnector {
   static const String _calendarSuggestionEventKey = "calendar_suggestion";
   static const String _userTaskExecutionStartEventKey =
       "user_task_execution_start";
+  static const String _workflowStepExecutionInitializedEventKey =
+      "workflow_step_execution_initialized";
+  static const String _workflowRunStartedEventKey = "workflow_run_started";
+  static const String _workflowRunEndedEventKey = "workflow_run_ended";
 
   /// List of all the events to emit to
   static const String _leaveSessionEventKey = 'leave_session';
@@ -228,6 +233,55 @@ class SocketioConnector {
     }
   }
 
+  void _workflowStepExecutionInitializedCallback(data) {
+    try {
+      print("data: $data");
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        try {
+          WorkflowSession session = s as WorkflowSession;
+          session.onWorkflowStepExecutionInitializedCallback(data);
+        } catch (e) {
+          //do nothing
+        }
+      }
+    } catch (e) {
+      logger.shout("Error in workflow step initialized callback: $e");
+    }
+  }
+
+  void _workflowRunStartedCallback(data) {
+    try {
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        try {
+          WorkflowSession session = s as WorkflowSession;
+          session.onWorkflowRunStartedCallback(data);
+        } catch (e) {
+          //do nothing
+        }
+      }
+    } catch (e) {
+      logger.shout("Error in workflow step started callback: $e");
+    }
+  }
+
+  void _workflowRunEndedCallback(data) {
+    try {
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        try {
+          WorkflowSession session = s as WorkflowSession;
+          session.onWorkflowRunEndedCallback(data);
+        } catch (e) {
+          //do nothing
+        }
+      }
+    } catch (e) {
+      logger.shout("Error in workflow step ended callback: $e");
+    }
+  }
+
   void _onMultipleConnect() {
     logger.info("👉 multiple connect");
   }
@@ -268,6 +322,10 @@ class SocketioConnector {
     _socket.on(_calendarSuggestionEventKey, _calendarSuggestionCallback);
     _socket.on(
         _userTaskExecutionStartEventKey, _userTaskExecutionStartCallback);
+    _socket.on(_workflowStepExecutionInitializedEventKey,
+        _workflowStepExecutionInitializedCallback);
+    _socket.on(_workflowRunStartedEventKey, _workflowRunStartedCallback);
+    _socket.on(_workflowRunEndedEventKey, _workflowRunEndedCallback);
   }
 
   /// Connect to the socket

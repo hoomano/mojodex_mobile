@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/views/home_screen/home_screen.dart';
@@ -14,6 +15,8 @@ import 'package:mojodex_mobile/src/views/todos_view/todos_view.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_list/user_task_execution_list.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/load_user_task_execution_view.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/user_task_execution_view.dart';
+import 'package:mojodex_mobile/src/views/workflows_view/new_user_workflow_execution.dart';
+import 'package:mojodex_mobile/src/views/workflows_view/user_workflow_execution_view.dart';
 
 import 'models/user/user.dart';
 
@@ -29,8 +32,8 @@ class AppRouter {
 
   factory AppRouter() => _instance;
 
-  String initialLocation =
-      "/${HomeScreen.routeName}"; //'/${UserTaskExecutionsListView.routeName}';
+  String initialLocation = "/${NewUserWorkflowExecution.routeName}";
+  // "/${HomeScreen.routeName}"; //'/${UserTaskExecutionsListView.routeName}';
 
   late GoRouter _goRouter;
   GoRouter get goRouter => _goRouter;
@@ -72,6 +75,22 @@ class AppRouter {
             builder: (context, state) {
               return NewUserTaskExecution();
             }),
+        GoRoute(
+            path: "/${NewUserWorkflowExecution.routeName}",
+            name: NewUserWorkflowExecution.routeName,
+            builder: (context, state) {
+              return NewUserWorkflowExecution();
+            }),
+        GoRoute(
+          path: '/${UserWorkflowExecutionView.routeName}',
+          name: UserWorkflowExecutionView.routeName,
+          builder: (context, state) {
+            if (state.extra != null) {
+              return state.extra as UserWorkflowExecutionView;
+            }
+            return Container();
+          },
+        ),
         GoRoute(
             path: "/${TodosListView.routeName}",
             name: TodosListView.routeName,

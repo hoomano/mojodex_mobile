@@ -12,6 +12,7 @@ import '../home_screen/home_screen.dart';
 import '../settings_view/settings_view.dart';
 import '../todos_view/todos_view.dart';
 import '../widgets/profile_picture.dart';
+import '../workflows_view/new_user_workflow_execution.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
@@ -40,6 +41,13 @@ class AppDrawer extends StatelessWidget {
                     ),
                     title: "Home",
                     routeToGo: HomeScreen.routeName),
+                DrawerPageItem(
+                    icon: ds.DesignIcon.suitcase(
+                      size: ds.TextFontSize.body1,
+                    ),
+                    title: "New workflow",
+                    replacement: false,
+                    routeToGo: NewUserWorkflowExecution.routeName),
                 DrawerPageItem(
                     icon: ds.DesignIcon.addPlus(
                       size: ds.TextFontSize.body1,
