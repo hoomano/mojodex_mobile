@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mojodex_mobile/src/views/workflows_view/run_widget.dart';
+import 'package:mojodex_mobile/src/views/workflows_view/process_view/run_widget.dart';
 
-import '../../../DS/design_system.dart' as ds;
-import '../../models/workflows/user_workflow_step_execution.dart';
+import '../../../../DS/design_system.dart' as ds;
+import '../../../models/workflows/user_workflow_step_execution.dart';
 
 class StepExecutionWidget extends StatelessWidget {
   final UserWorkflowStepExecution stepExecution;
-  const StepExecutionWidget({super.key, required this.stepExecution});
+  final Function() onReject;
+  const StepExecutionWidget(
+      {super.key, required this.stepExecution, required this.onReject});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,8 @@ class StepExecutionWidget extends StatelessWidget {
                       fontSize: ds.TextFontSize.h5,
                       fontWeight: FontWeight.bold),
                 ),
-              ]..addAll(stepExecution.runs.map((run) => RunWidget(run: run))),
+              ]..addAll(stepExecution.runs
+                  .map((run) => RunWidget(run: run, onReject: onReject))),
             )),
       ),
     );

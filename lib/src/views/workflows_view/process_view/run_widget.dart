@@ -5,12 +5,14 @@ import 'package:mojodex_mobile/src/models/workflows/user_workflow_step_execution
 import 'package:provider/provider.dart';
 import 'package:timelines/timelines.dart';
 
-import '../../../DS/design_system.dart' as ds;
-import '../../../DS/theme/themes.dart';
+import '../../../../DS/design_system.dart' as ds;
+import '../../../../DS/theme/themes.dart';
 
 class RunWidget extends StatefulWidget {
   final UserWorkflowStepExecutionRun run;
-  const RunWidget({required this.run, Key? key}) : super(key: key);
+  final Function() onReject;
+  const RunWidget({required this.run, required this.onReject, Key? key})
+      : super(key: key);
 
   @override
   State<RunWidget> createState() => _RunWidgetState();
@@ -112,7 +114,13 @@ class _RunWidgetState extends State<RunWidget> {
                 if (widget.run.result != null && !widget.run.validated)
                   RunValidationWidget(
                     onReject: () async {
-                      bool success = await widget.run.invalidate();
+                      // option 1: retourner sur le chat => Mais un peu trompeur pour le user: ça laisse penser qu'on peut demander n'importe quoi dans le chat
+                      widget.onReject();
+
+                      // option 2: invalider le run => Pour le debug
+                      // bool success = await widget.run.invalidate();
+
+                      // option 3: ouvrir un mini-chat ici même pour obtenir les précisions nécessaires
                     },
                     onValidate: () async {
                       bool success = await widget.run.validate();

@@ -78,40 +78,47 @@ abstract class CachedList<T extends SerializableDataItem> extends ChangeNotifier
   /// load the more user_task_executions
   Future<bool> loadMoreItems(
       {int maxItemsByCall = 50, required int offset}) async {
-    if (loading) return false;
-    loading = true;
-    notifyListeners();
+    try {
+      if (loading) return false;
+      loading = true;
+      notifyListeners();
 
-    Map<String, dynamic>? itemsData;
-    bool loadFromBackend = true;
-    // if there is no filter and offset is 0, load from local file if it exists
-    if (offset == 0) {
-      bool fileExists = await (await localFile).exists();
-      if (fileExists) {
-        itemsData = await loadListFromLocalFile();
-        loadFromBackend = false;
-      }
-    }
-    if (loadFromBackend) {
-      itemsData =
-          await getItems(offset: offset, maxItemsByCall: maxItemsByCall);
-    }
-    if (itemsData != null) {
-      List<T> i = dataToItems(itemsData);
-      items.addAll(i);
+      Map<String, dynamic>? itemsData;
+      bool loadFromBackend = true;
+
+      // if there is no filter and offset is 0, load from local file if it exists
       if (offset == 0) {
-        if (loadFromBackend) {
-          writeFile(itemsData);
-          logger.info("Saved to local file: $localFileName");
-        } else {
-          refreshLocalList();
+        bool fileExists = await (await localFile).exists();
+        if (fileExists) {
+          itemsData = await loadListFromLocalFile();
+          loadFromBackend = false;
         }
       }
-    }
 
-    loading = false;
-    notifyListeners();
-    return true;
+      if (loadFromBackend) {
+        itemsData =
+            await getItems(offset: offset, maxItemsByCall: maxItemsByCall);
+      }
+
+      if (itemsData != null) {
+        List<T> i = dataToItems(itemsData);
+        items.addAll(i);
+        if (offset == 0) {
+          if (loadFromBackend) {
+            writeFile(itemsData);
+            logger.info("Saved to local file: $localFileName");
+          } else {
+            refreshLocalList();
+          }
+        }
+      }
+
+      loading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      throw Exception("Error loading items: $e");
+    }
   }
 
   Future<void> writeFile(Map<String, dynamic> data) async {

@@ -295,28 +295,33 @@ class Session extends ChangeNotifier with HttpCaller {
   }
 
   @protected
+  Map<String, dynamic> userMessageFormData(UserMessage message, String origin) {
+    Map<String, dynamic> formData = {
+      'session_id': sessionId,
+      'message_date': message.creationDate.toIso8601String(),
+      // this id is to avoid sending multiple time the same message to whisper, backend will check it is not already treating it.
+      'message_id': "${message.creationDate.toIso8601String()}_$sessionId",
+      'message_pk': message.hasMessagePk ? message.messagePk : null,
+      'origin': origin
+    }..addAll(get_placeholders());
+    if (!message.hasAudio) {
+      // for auto-send message for example
+      formData['text'] = message.text;
+    }
+    return formData;
+  }
+
+  @protected
   Future<Map<String, dynamic>?> sendUserMessage(UserMessage message,
       {int retry = 3, String origin = 'home_chat'}) async {
     try {
       String service = "user_message";
-      Map<String, dynamic> formData = {
-        'session_id': sessionId,
-        'message_date': message.creationDate.toIso8601String(),
-        // this id is to avoid sending multiple time the same message to whisper, backend will check it is not already treating it.
-        'message_id': "${message.creationDate.toIso8601String()}_$sessionId",
-        'message_pk': message.hasMessagePk ? message.messagePk : null,
-        'origin': origin
-      }..addAll(get_placeholders());
-      if (!message.hasAudio) {
-        // for auto-send message for example
-        formData['text'] = message.text;
-      }
 
       Map<String, dynamic>? response;
       try {
         response = await putMultipart(
             service: service,
-            formData: formData,
+            formData: userMessageFormData(message, origin),
             filePath: (!message.hasMessagePk && message.hasAudio)
                 ? message.localAudioPath
                 : null,

@@ -93,6 +93,7 @@ class _WorkflowCardState extends State<WorkflowCard> {
                       UserWorkflowExecutionView userWorkflowExecutionView =
                           UserWorkflowExecutionView(
                         userWorkflowExecution: newUserWorkflowExecution,
+                        refreshUserWorkflowExecution: false,
                       );
 
                       if (widget.onNavigateToUserWorkflowExecutionView !=

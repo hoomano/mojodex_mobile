@@ -1,6 +1,8 @@
 import 'package:mojodex_mobile/src/models/session/session.dart';
 import 'package:mojodex_mobile/src/models/workflows/user_workflow_step_execution_run.dart';
 
+import 'messages/user_message.dart';
+
 class WorkflowSession extends Session {
   WorkflowSession(
       {required super.sessionId,
@@ -44,5 +46,12 @@ class WorkflowSession extends Session {
   void onWorkflowStepExecutionResetCallback(dynamic data) {
     onUserWorkflowStepExecutionReset(data["user_workflow_step_execution_pk"],
         data["previous_step_execution_pk"]);
+  }
+
+  @override
+  Map<String, dynamic> userMessageFormData(UserMessage message, String origin) {
+    Map<String, dynamic> formData = super.userMessageFormData(message, origin);
+    // todo formData['user_workflow_execution_pk'] = _userWorkflowExecutionPk;
+    return formData;
   }
 }

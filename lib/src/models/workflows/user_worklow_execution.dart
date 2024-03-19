@@ -109,4 +109,40 @@ class UserWorkflowExecution extends SerializableDataItem
       return null;
     }
   }
+
+  bool refreshing = false;
+
+  /// Refresh the user workflow execution data that could have evolved while user was not on its view:
+  Future<void> refresh() async {
+    if (refreshing) return;
+    refreshing = true;
+    notifyListeners();
+
+    //resubmit old messages in error
+    session.resubmitOldMessagesInError();
+    List<Future> futures = [
+      session.loadMoreMessages(nMessages: 10, loadOlder: false),
+      _refreshData(),
+    ];
+    await Future.wait(futures);
+    refreshing = false;
+    notifyListeners();
+  }
+
+  Future<void> _refreshData() async {
+    Map<String, dynamic>? userWorkflowExecutionData = await get(
+        service: "user_workflow_execution",
+        params: "user_workflow_execution_pk=$pk");
+    if (userWorkflowExecutionData != null) {
+      updateFromJson(userWorkflowExecutionData);
+    }
+  }
+
+  Future<void> updateFromJson(Map<String, dynamic> data) async {
+    // TODO
+  }
+
+  /// Whether the user workflow execution has been deleted by the user
+  bool _deletedByUser = false;
+  bool get deletedByUser => _deletedByUser;
 }

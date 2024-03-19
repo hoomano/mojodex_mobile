@@ -211,7 +211,14 @@ class TaskSession extends Session {
   String getMessageParams({offset = 0, maxMessagesByCall = 10, older = true}) {
     String params = super.getMessageParams(
         offset: offset, maxMessagesByCall: maxMessagesByCall, older: older);
-    return "$params&user_task_execution_pk=${_userTaskExecutionPk}";
+    return "$params&user_task_execution_pk=$_userTaskExecutionPk";
+  }
+
+  @override
+  Map<String, dynamic> userMessageFormData(UserMessage message, String origin) {
+    Map<String, dynamic> formData = super.userMessageFormData(message, origin);
+    formData['user_task_execution_pk'] = _userTaskExecutionPk;
+    return formData;
   }
 
   @override
