@@ -40,19 +40,25 @@ class UserWorkflowStepExecution {
     };
   }
 
+  bool reset(int newStepExecutionPk) {
+    if (pk != newStepExecutionPk) {
+      pk = newStepExecutionPk;
+      runs = [];
+      initialized = false;
+      return true;
+    }
+    return false;
+  }
+
   bool startRun(int runExecutionPk) {
     UserWorkflowStepExecutionRun runToStart =
         runs.firstWhere((run) => run.pk == runExecutionPk);
-    if (runToStart.started) return false;
-    runToStart.started = true;
-    print("🟢 Step $pk started run $runExecutionPk");
-    return true;
+    return runToStart.start();
   }
 
   void initialize(List<UserWorkflowStepExecutionRun> runs) {
     initialized = true;
     this.runs = runs;
-    print("Step $pk initialized");
   }
 
   bool endRun(int runExecutionPk, List<Map<String, dynamic>> result) {
@@ -60,7 +66,6 @@ class UserWorkflowStepExecution {
         runs.firstWhere((run) => run.pk == runExecutionPk);
     if (runToEnd.result != null) return false;
     runToEnd.result = result;
-    print("🟢 Step $pk ended run $runExecutionPk");
     return true;
   }
 }

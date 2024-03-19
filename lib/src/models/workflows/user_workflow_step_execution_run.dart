@@ -18,17 +18,33 @@ class UserWorkflowStepExecutionRun with HttpCaller {
     return {'user_workflow_execution_step_run_pk': pk};
   }
 
+  bool start() {
+    if (started && result == null) {
+      return false; // already started, socketio message received twice
+    }
+    started = true;
+    result = null;
+    validated = false;
+    return true;
+  }
+
   Future<bool> validate() async {
+    return await _send_backend_validation(true);
+  }
+
+  Future<bool> invalidate() async {
+    return await _send_backend_validation(false);
+  }
+
+  Future<bool> _send_backend_validation(bool userValidation) async {
     Map<String, dynamic> body = {
       "user_workflow_step_execution_run_pk": pk,
-      'validated': true
+      'validated': userValidation
     };
     Map<String, dynamic>? response =
         await post(service: "user_workflow_step_execution_run", body: body);
-    print("👉 validate response: $response");
     if (response != null) {
-      validated = true;
-      print("👉 validated: $validated");
+      validated = userValidation;
       return true;
     }
     return false;

@@ -9,10 +9,10 @@ import '../../../DS/theme/themes.dart';
 import '../../models/language/system_language.dart';
 import '../../models/user/user.dart';
 import '../home_screen/home_screen.dart';
+import '../new_user_workflow_execution/new_user_workflow_execution.dart';
 import '../settings_view/settings_view.dart';
 import '../todos_view/todos_view.dart';
 import '../widgets/profile_picture.dart';
-import '../workflows_view/new_user_workflow_execution.dart';
 
 class AppDrawer extends StatelessWidget {
   @override

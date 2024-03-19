@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mojodex_mobile/src/views/widgets/common_scaffold.dart';
 import 'package:mojodex_mobile/src/views/workflows_view/step_widget.dart';
+import 'package:mojodex_mobile/src/views/workflows_view/user_worflow_execution_form.dart';
 import 'package:provider/provider.dart';
 
-import '../../../DS/design_system.dart' as ds;
 import '../../models/workflows/user_worklow_execution.dart';
 
 class UserWorkflowExecutionView extends StatefulWidget {
@@ -48,24 +48,8 @@ class _UserWorkflowExecutionViewState extends State<UserWorkflowExecutionView> {
                         ? Center(
                             child: CircularProgressIndicator(),
                           )
-                        : ds.Button.fill(
-                            onPressed: () async {
-                              setState(() {
-                                loading = true;
-                              });
-                              Map<String, dynamic>? response =
-                                  await userWorkflowExecution.start({
-                                "text": "Salut\nComment ça va?",
-                                "target_language": "en"
-                              });
-                              if (response == null) {
-                                setState(() {
-                                  loading = false;
-                                });
-                                return;
-                              }
-                            },
-                            text: "Start"),
+                        : UserWorkflowExecutionForm(
+                            userWorkflowExecution: userWorkflowExecution),
                   )
                 ]..addAll(userWorkflowExecution.stepExecutions
                     .map((stepExecution) =>

@@ -5,6 +5,7 @@ import 'package:mojodex_mobile/src/views/home_screen/home_screen.dart';
 import 'package:mojodex_mobile/src/views/login_view/signin.dart';
 import 'package:mojodex_mobile/src/views/login_view/signup.dart';
 import 'package:mojodex_mobile/src/views/new_user_task_execution/new_user_task_execution.dart';
+import 'package:mojodex_mobile/src/views/new_user_workflow_execution/new_user_workflow_execution.dart';
 import 'package:mojodex_mobile/src/views/onboarding/onboarding_page_controller.dart';
 import 'package:mojodex_mobile/src/views/reset_password/reset_password_view.dart';
 import 'package:mojodex_mobile/src/views/settings_view/account_deletion_view/account_deletion.dart';
@@ -15,7 +16,6 @@ import 'package:mojodex_mobile/src/views/todos_view/todos_view.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_list/user_task_execution_list.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/load_user_task_execution_view.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/user_task_execution_view.dart';
-import 'package:mojodex_mobile/src/views/workflows_view/new_user_workflow_execution.dart';
 import 'package:mojodex_mobile/src/views/workflows_view/user_workflow_execution_view.dart';
 
 import 'models/user/user.dart';

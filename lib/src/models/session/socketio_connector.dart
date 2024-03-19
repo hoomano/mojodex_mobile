@@ -49,6 +49,8 @@ class SocketioConnector {
       "user_task_execution_start";
   static const String _workflowStepExecutionInitializedEventKey =
       "workflow_step_execution_initialized";
+  static const String _workflowStepExecutionResetEventKey =
+      "workflow_step_execution_reset";
   static const String _workflowRunStartedEventKey = "workflow_run_started";
   static const String _workflowRunEndedEventKey = "workflow_run_ended";
 
@@ -192,7 +194,6 @@ class SocketioConnector {
   void _mojoTokenCallback(data) {
     try {
       List<Session> sessions = _getSessionFromId(data['session_id']);
-      print("Streaming in ${sessions.length} sessions.");
       for (Session s in sessions) {
         s.onMojoToken(data);
       }
@@ -235,12 +236,27 @@ class SocketioConnector {
 
   void _workflowStepExecutionInitializedCallback(data) {
     try {
-      print("data: $data");
       List<Session> sessions = _getSessionFromId(data['session_id']);
       for (Session s in sessions) {
         try {
           WorkflowSession session = s as WorkflowSession;
           session.onWorkflowStepExecutionInitializedCallback(data);
+        } catch (e) {
+          //do nothing
+        }
+      }
+    } catch (e) {
+      logger.shout("Error in workflow step initialized callback: $e");
+    }
+  }
+
+  void _workflowStepExecutionResetCallback(data) {
+    try {
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        try {
+          WorkflowSession session = s as WorkflowSession;
+          session.onWorkflowStepExecutionResetCallback(data);
         } catch (e) {
           //do nothing
         }
@@ -324,6 +340,8 @@ class SocketioConnector {
         _userTaskExecutionStartEventKey, _userTaskExecutionStartCallback);
     _socket.on(_workflowStepExecutionInitializedEventKey,
         _workflowStepExecutionInitializedCallback);
+    _socket.on(_workflowStepExecutionResetEventKey,
+        _workflowStepExecutionResetCallback);
     _socket.on(_workflowRunStartedEventKey, _workflowRunStartedCallback);
     _socket.on(_workflowRunEndedEventKey, _workflowRunEndedCallback);
   }

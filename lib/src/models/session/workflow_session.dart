@@ -6,7 +6,8 @@ class WorkflowSession extends Session {
       {required super.sessionId,
       required this.onUserWorkflowRunExecutionStarted,
       required this.onUserWorkflowRunExecutionEnded,
-      required this.onUserWorkflowStepExecutionInitialized});
+      required this.onUserWorkflowStepExecutionInitialized,
+      required this.onUserWorkflowStepExecutionReset});
 
   final Function(int stepExecutionPk, int runExecutionPk)
       onUserWorkflowRunExecutionStarted;
@@ -14,9 +15,10 @@ class WorkflowSession extends Session {
       List<Map<String, dynamic>> result) onUserWorkflowRunExecutionEnded;
   final Function(int stepExecutionPk, List<UserWorkflowStepExecutionRun> runs)
       onUserWorkflowStepExecutionInitialized;
+  final Function(int stepExecutionPk, int previousStepExecutionPk)
+      onUserWorkflowStepExecutionReset;
 
   void onWorkflowRunStartedCallback(dynamic data) {
-    print("🟢 onWorkflowRunStartedCallback");
     onUserWorkflowRunExecutionStarted(
         data["step_execution_fk"], data["user_workflow_step_execution_run_pk"]);
   }
@@ -37,5 +39,10 @@ class WorkflowSession extends Session {
             .map<UserWorkflowStepExecutionRun>(
                 (run) => UserWorkflowStepExecutionRun.fromJson(run))
             .toList());
+  }
+
+  void onWorkflowStepExecutionResetCallback(dynamic data) {
+    onUserWorkflowStepExecutionReset(data["user_workflow_step_execution_pk"],
+        data["previous_step_execution_pk"]);
   }
 }

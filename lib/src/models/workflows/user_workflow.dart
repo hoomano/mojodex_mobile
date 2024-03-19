@@ -12,6 +12,8 @@ class UserWorkflow extends SerializableDataItem with HttpCaller {
   /// Workflow to which userWorkflow is associated
   late Workflow workflow;
 
+  bool enabled = true; // todo
+
   UserWorkflow({required int userWorkflowPk, required this.workflow})
       : super(userWorkflowPk);
 

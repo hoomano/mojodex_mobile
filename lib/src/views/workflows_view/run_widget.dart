@@ -58,7 +58,6 @@ class _RunWidgetState extends State<RunWidget> {
       indicator = notDoneIndicator;
     }
 
-    print("Widget.run.validated: ${widget.run.validated}");
     return Padding(
       padding: const EdgeInsets.all(ds.Spacing.smallPadding),
       child: Container(
@@ -86,13 +85,35 @@ class _RunWidgetState extends State<RunWidget> {
                 if (widget.run.result != null)
                   Padding(
                     padding: const EdgeInsets.all(ds.Spacing.smallPadding),
-                    child: Text(
-                      widget.run.result!.toString(),
-                      style: TextStyle(fontSize: ds.TextFontSize.body2),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: ds.DesignColor.grey.grey_3,
+                        ),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(ds.Spacing.smallPadding),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: widget.run.result!
+                                .map(
+                                  (r) => Text(
+                                    r.toString(),
+                                    style: TextStyle(
+                                        fontSize: ds.TextFontSize.body2),
+                                  ),
+                                )
+                                .toList()),
+                      ),
                     ),
                   ),
                 if (widget.run.result != null && !widget.run.validated)
                   RunValidationWidget(
+                    onReject: () async {
+                      bool success = await widget.run.invalidate();
+                    },
                     onValidate: () async {
                       bool success = await widget.run.validate();
                       if (success) {
@@ -111,7 +132,9 @@ class _RunWidgetState extends State<RunWidget> {
 
 class RunValidationWidget extends StatelessWidget {
   final Function() onValidate;
-  const RunValidationWidget({required this.onValidate, Key? key})
+  final Function() onReject;
+  const RunValidationWidget(
+      {required this.onValidate, required this.onReject, Key? key})
       : super(key: key);
 
   @override
@@ -124,7 +147,7 @@ class RunValidationWidget extends StatelessWidget {
           child: ds.Button.fill(
             text: "Reject",
             padding: const EdgeInsets.all(ds.Spacing.smallPadding),
-            onPressed: () {},
+            onPressed: onReject,
             textColor: ds.DesignColor.primary.main,
             backgroundColor: themeProvider.themeMode == ThemeMode.dark
                 ? ds.DesignColor.grey.grey_1

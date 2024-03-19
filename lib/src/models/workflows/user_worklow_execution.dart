@@ -12,22 +12,13 @@ class UserWorkflowExecution extends SerializableDataItem
   late final int userWorkflowPk;
   late List<UserWorkflowStepExecution> stepExecutions;
 
+  late List<Map<String, dynamic>>
+      inputs; // for now only keys => 1 key = 1 text field
+
   /// The date and time the workflow was started
   DateTime? startDate;
 
   late WorkflowSession session;
-
-  UserWorkflowExecution(
-      {required int userWorkflowExecutionPk,
-      required this.userWorkflowPk,
-      required String sessionId})
-      : super(userWorkflowExecutionPk) {
-    session = WorkflowSession(
-        sessionId: sessionId,
-        onUserWorkflowStepExecutionInitialized: _initializeStepExecution,
-        onUserWorkflowRunExecutionStarted: _startRunExecution,
-        onUserWorkflowRunExecutionEnded: _endRunExecution);
-  }
 
   @override
   UserWorkflowExecution.fromJson(Map<String, dynamic> data)
@@ -38,11 +29,15 @@ class UserWorkflowExecution extends SerializableDataItem
         .map<UserWorkflowStepExecution>(
             (step) => UserWorkflowStepExecution.fromJson(step))
         .toList();
+    inputs = data['inputs']
+        .map<Map<String, dynamic>>((input) => input as Map<String, dynamic>)
+        .toList();
     startDate =
         data['start_date'] != null ? DateTime.parse(data['start_date']) : null;
     session = WorkflowSession(
         sessionId: data['session_id'],
         onUserWorkflowStepExecutionInitialized: _initializeStepExecution,
+        onUserWorkflowStepExecutionReset: _resetStepExecution,
         onUserWorkflowRunExecutionStarted: _startRunExecution,
         onUserWorkflowRunExecutionEnded: _endRunExecution);
   }
@@ -54,6 +49,15 @@ class UserWorkflowExecution extends SerializableDataItem
     if (stepToInitialize.initialized) return;
     stepToInitialize.initialize(runs);
     notifyListeners();
+  }
+
+  void _resetStepExecution(int stepExecutionPk, int previousStepExecutionPk) {
+    UserWorkflowStepExecution stepToReset =
+        stepExecutions.firstWhere((step) => step.pk == previousStepExecutionPk);
+    bool reset = stepToReset.reset(stepExecutionPk);
+    if (reset) {
+      notifyListeners();
+    }
   }
 
   void _startRunExecution(int stepExecutionPk, int runExecutionPk) {
