@@ -151,13 +151,8 @@ class Session extends ChangeNotifier with HttpCaller {
     callback(callBackMap);
   }
 
-  // returns false if message should not be treated (already treated)
-  bool onMojoMessage(dynamic data) {
-    Map<String, dynamic> messageMap = data[0];
-    int messagePk = messageMap['message_pk'];
-    Function(dynamic) callback = data[1];
-    ackMojoMessage(messageMap, messagePk, callback);
-
+  @protected
+  bool dropMessage(int messagePk) {
     // Following is for avoiding receving duplicate messages if backend did not received ack which happens with slow network
     // - _messages.isEmpty is for dealing with the case where you were chatting, went back to the task list (there session.messages is cleared idk why) and then went back to the chat
     // here messages are empty but you are still receiving missed acked messages
@@ -165,11 +160,23 @@ class Session extends ChangeNotifier with HttpCaller {
     if (_messages.isEmpty ||
         getMessageFromPk(messagePk, MessageSender.agent) != null) {
       logger.fine("Already received message => dropping");
-      return false; // maybe the backend missed a ack
+      return true; // maybe the backend missed a ack
+    }
+    return false;
+  }
+
+  // returns false if message should not be treated (already treated)
+  bool onMojoMessage(dynamic data) {
+    Map<String, dynamic> messageMap = data[0];
+    int messagePk = messageMap['message_pk'];
+    Function(dynamic) callback = data[1];
+    ackMojoMessage(messageMap, messagePk, callback);
+
+    if (dropMessage(messagePk)) {
+      return false;
     }
 
     MojoMessage message = mojoMessageFromMap(messageMap, messagePk);
-
     if (message.hasAudio) {
       message.audioManager = AudioManager(getAudioFile: message.getVoice);
     }

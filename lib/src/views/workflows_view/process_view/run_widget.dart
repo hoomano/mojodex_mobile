@@ -115,10 +115,11 @@ class _RunWidgetState extends State<RunWidget> {
                   RunValidationWidget(
                     onReject: () async {
                       // option 1: retourner sur le chat => Mais un peu trompeur pour le user: ça laisse penser qu'on peut demander n'importe quoi dans le chat
+                      bool success = await widget.run.invalidate();
                       widget.onReject();
 
                       // option 2: invalider le run => Pour le debug
-                      // bool success = await widget.run.invalidate();
+                      //bool success = await widget.run.invalidate();
 
                       // option 3: ouvrir un mini-chat ici même pour obtenir les précisions nécessaires
                     },

@@ -14,17 +14,19 @@ class ProcessView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Column(
-      children: [
-        Visibility(
-          visible: userWorkflowExecution.startDate == null,
-          child: UserWorkflowExecutionForm(
-              userWorkflowExecution: userWorkflowExecution),
-        )
-      ]..addAll(userWorkflowExecution.stepExecutions
-          .map((stepExecution) => StepExecutionWidget(
-              stepExecution: stepExecution, onReject: onReject))
-          .cast()),
+        child: SingleChildScrollView(
+      child: Column(
+        children: [
+          Visibility(
+            visible: userWorkflowExecution.startDate == null,
+            child: UserWorkflowExecutionForm(
+                userWorkflowExecution: userWorkflowExecution),
+          )
+        ]..addAll(userWorkflowExecution.stepExecutions
+            .map((stepExecution) => StepExecutionWidget(
+                stepExecution: stepExecution, onReject: onReject))
+            .cast()),
+      ),
     ));
   }
 }

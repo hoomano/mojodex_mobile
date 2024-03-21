@@ -103,7 +103,7 @@ class User extends ChangeNotifier with HttpCaller {
       if (!presented) {
         await purchaseManager.getProductCategories();
       } else {
-        await HomeChat().init();
+        //await HomeChat().init();
       }
       _isLoggedIn = true;
       notifyListeners();

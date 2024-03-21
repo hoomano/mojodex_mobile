@@ -34,6 +34,7 @@ class UserWorkflowExecutionForm extends StatelessWidget {
                 onChanged: (value) {
                   fieldValues[input['input_name']] = value;
                 },
+                maxLines: null, // allows dynamic resizing
               ),
             ),
           SizedBox(height: 20), // Add some space between fields and button

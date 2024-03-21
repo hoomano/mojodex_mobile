@@ -36,6 +36,7 @@ class UserWorkflowExecution extends SerializableDataItem
         data['start_date'] != null ? DateTime.parse(data['start_date']) : null;
     session = WorkflowSession(
         sessionId: data['session_id'],
+        userWorkflowExecutionPk: pk!,
         onUserWorkflowStepExecutionInitialized: _initializeStepExecution,
         onUserWorkflowStepExecutionReset: _resetStepExecution,
         onUserWorkflowRunExecutionStarted: _startRunExecution,
