@@ -5,15 +5,9 @@ import '../../../models/workflows/user_worklow_execution.dart';
 
 class UserWorkflowExecutionForm extends StatelessWidget {
   final UserWorkflowExecution userWorkflowExecution;
-  late Map<String, dynamic> fieldValues;
 
   UserWorkflowExecutionForm({required this.userWorkflowExecution, Key? key})
-      : super(key: key) {
-    fieldValues = {
-      for (var input in userWorkflowExecution.inputs)
-        input['input_name']: input['default_value'],
-    };
-  }
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +26,7 @@ class UserWorkflowExecutionForm extends StatelessWidget {
                 ),
                 initialValue: input['default_value']?.toString(),
                 onChanged: (value) {
-                  fieldValues[input['input_name']] = value;
+                  input['value'] = value;
                 },
                 maxLines: null, // allows dynamic resizing
               ),
@@ -44,8 +38,9 @@ class UserWorkflowExecutionForm extends StatelessWidget {
                 /* setState(() {
                     loading = true;
                   });*/
+
                 Map<String, dynamic>? response =
-                    await userWorkflowExecution.start(fieldValues);
+                    await userWorkflowExecution.start();
                 if (response == null) {
                   /*setState(() {
                       loading = false;

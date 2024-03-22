@@ -20,6 +20,9 @@ class UserWorkflowExecution extends SerializableDataItem
 
   late WorkflowSession session;
 
+  bool _waitingForValidation = false;
+  bool get waitingForValidation => _waitingForValidation;
+
   @override
   UserWorkflowExecution.fromJson(Map<String, dynamic> data)
       : super.fromJson(data) {
@@ -49,6 +52,7 @@ class UserWorkflowExecution extends SerializableDataItem
         stepExecutions.firstWhere((step) => step.pk == stepExecutionPk);
     if (stepToInitialize.initialized) return;
     stepToInitialize.initialize(runs);
+    _waitingForValidation = true;
     notifyListeners();
   }
 
@@ -57,6 +61,7 @@ class UserWorkflowExecution extends SerializableDataItem
         stepExecutions.firstWhere((step) => step.pk == previousStepExecutionPk);
     bool reset = stepToReset.reset(stepExecutionPk);
     if (reset) {
+      _waitingForValidation = false;
       notifyListeners();
     }
   }
@@ -67,6 +72,7 @@ class UserWorkflowExecution extends SerializableDataItem
         .startRun(runExecutionPk);
     if (started) {
       // else, message already received
+      _waitingForValidation = false;
       notifyListeners();
     }
   }
@@ -77,6 +83,7 @@ class UserWorkflowExecution extends SerializableDataItem
         .firstWhere((step) => step.pk == stepExecutionPk)
         .endRun(runExecutionPk, result);
     if (ended) {
+      _waitingForValidation = true;
       notifyListeners();
     }
   }
@@ -92,12 +99,11 @@ class UserWorkflowExecution extends SerializableDataItem
     };
   }
 
-  Future<Map<String, dynamic>?> start(
-      Map<String, dynamic> initialParameters) async {
+  Future<Map<String, dynamic>?> start() async {
     try {
       Map<String, dynamic> body = {
         "user_workflow_execution_pk": pk!,
-        'initial_parameters': initialParameters
+        'json_inputs': inputs
       };
       Map<String, dynamic>? response =
           await post(service: "user_workflow_execution", body: body);

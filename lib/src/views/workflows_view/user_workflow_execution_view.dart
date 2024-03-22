@@ -6,6 +6,7 @@ import 'package:mojodex_mobile/src/views/workflows_view/result_view/result_view.
 import 'package:provider/provider.dart';
 
 import '../../../DS/design_system.dart' as ds;
+import '../../microphone.dart';
 import '../../models/session/session.dart';
 import '../../models/workflows/user_worklow_execution.dart';
 import 'deleted_user_workflow_execution.dart';
@@ -80,6 +81,10 @@ class _UserWorkflowExecutionViewState extends State<UserWorkflowExecutionView>
           if (userWorkflowExecution.deletedByUser) {
             return DeletedUserWorkflowExecution();
           }
+          if (!userWorkflowExecution.waitingForValidation &&
+              _tabController.index != 1) {
+            _tabController.animateTo(1);
+          }
           return MojodexScaffold(
             appBarTitle: "Workflow ${userWorkflowExecution.pk}",
             safeAreaOverflow: false,
@@ -112,10 +117,10 @@ class _UserWorkflowExecutionViewState extends State<UserWorkflowExecutionView>
                 ProcessView(
                   userWorkflowExecution: userWorkflowExecution,
                   onReject: () async {
-                    /*await Microphone().record(
+                    await Microphone().record(
                       filename: 'user_message',
-                    );*.return;*/
-                    userWorkflowExecution.session.waitingForMojo = true;
+                    );
+                    //userWorkflowExecution.session.waitingForMojo = true;
                     _tabController.animateTo(0);
                   },
                 ),
