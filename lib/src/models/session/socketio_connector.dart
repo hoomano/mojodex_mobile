@@ -47,12 +47,12 @@ class SocketioConnector {
   static const String _calendarSuggestionEventKey = "calendar_suggestion";
   static const String _userTaskExecutionStartEventKey =
       "user_task_execution_start";
-  static const String _workflowStepExecutionInitializedEventKey =
-      "workflow_step_execution_initialized";
-  static const String _workflowStepExecutionResetEventKey =
-      "workflow_step_execution_reset";
-  static const String _workflowRunStartedEventKey = "workflow_run_started";
-  static const String _workflowRunEndedEventKey = "workflow_run_ended";
+  static const String _workflowStepExecutionInvalidatedEventKey =
+      "workflow_step_execution_invalidated";
+  static const String _workflowStepExecutionStartedEventKey =
+      "workflow_step_execution_started";
+  static const String _workflowStepExecutionEndedEventKey =
+      "workflow_step_execution_ended";
 
   /// List of all the events to emit to
   static const String _leaveSessionEventKey = 'leave_session';
@@ -234,13 +234,14 @@ class SocketioConnector {
     }
   }
 
-  void _workflowStepExecutionInitializedCallback(data) {
+  void _workflowStepExecutionInvalidatedCallback(data) {
     try {
+      print("🟢 workflowStepExecutionInvalidatedCallback");
       List<Session> sessions = _getSessionFromId(data['session_id']);
       for (Session s in sessions) {
         try {
           WorkflowSession session = s as WorkflowSession;
-          session.onWorkflowStepExecutionInitializedCallback(data);
+          session.onWorkflowStepExecutionInvalidatedCallback(data);
         } catch (e) {
           //do nothing
         }
@@ -250,29 +251,13 @@ class SocketioConnector {
     }
   }
 
-  void _workflowStepExecutionResetCallback(data) {
+  void _workflowStepExecutionStartedCallback(data) {
     try {
       List<Session> sessions = _getSessionFromId(data['session_id']);
       for (Session s in sessions) {
         try {
           WorkflowSession session = s as WorkflowSession;
-          session.onWorkflowStepExecutionResetCallback(data);
-        } catch (e) {
-          //do nothing
-        }
-      }
-    } catch (e) {
-      logger.shout("Error in workflow step initialized callback: $e");
-    }
-  }
-
-  void _workflowRunStartedCallback(data) {
-    try {
-      List<Session> sessions = _getSessionFromId(data['session_id']);
-      for (Session s in sessions) {
-        try {
-          WorkflowSession session = s as WorkflowSession;
-          session.onWorkflowRunStartedCallback(data);
+          session.onNewWorkflowStepExecutionCallback(data);
         } catch (e) {
           //do nothing
         }
@@ -282,13 +267,13 @@ class SocketioConnector {
     }
   }
 
-  void _workflowRunEndedCallback(data) {
+  void _workflowStepExecutionEndedCallback(data) {
     try {
       List<Session> sessions = _getSessionFromId(data['session_id']);
       for (Session s in sessions) {
         try {
           WorkflowSession session = s as WorkflowSession;
-          session.onWorkflowRunEndedCallback(data);
+          session.onWorkflowStepExecutionEndedCallback(data);
         } catch (e) {
           //do nothing
         }
@@ -338,12 +323,12 @@ class SocketioConnector {
     _socket.on(_calendarSuggestionEventKey, _calendarSuggestionCallback);
     _socket.on(
         _userTaskExecutionStartEventKey, _userTaskExecutionStartCallback);
-    _socket.on(_workflowStepExecutionInitializedEventKey,
-        _workflowStepExecutionInitializedCallback);
-    _socket.on(_workflowStepExecutionResetEventKey,
-        _workflowStepExecutionResetCallback);
-    _socket.on(_workflowRunStartedEventKey, _workflowRunStartedCallback);
-    _socket.on(_workflowRunEndedEventKey, _workflowRunEndedCallback);
+    _socket.on(_workflowStepExecutionInvalidatedEventKey,
+        _workflowStepExecutionInvalidatedCallback);
+    _socket.on(_workflowStepExecutionStartedEventKey,
+        _workflowStepExecutionStartedCallback);
+    _socket.on(_workflowStepExecutionEndedEventKey,
+        _workflowStepExecutionEndedCallback);
   }
 
   /// Connect to the socket

@@ -1,8 +1,11 @@
+// import collection.dart
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mojodex_mobile/src/models/http_caller.dart';
 import 'package:mojodex_mobile/src/models/serializable_data_item.dart';
 import 'package:mojodex_mobile/src/models/workflows/user_workflow_step_execution.dart';
-import 'package:mojodex_mobile/src/models/workflows/user_workflow_step_execution_run.dart';
+import 'package:mojodex_mobile/src/models/workflows/workflow.dart';
+import 'package:mojodex_mobile/src/models/workflows/workflow_step.dart';
 
 import '../session/workflow_session.dart';
 
@@ -10,7 +13,9 @@ class UserWorkflowExecution extends SerializableDataItem
     with HttpCaller, ChangeNotifier {
   //late final Session session; Todo: new type of session ?
   late final int userWorkflowPk;
-  late List<UserWorkflowStepExecution> stepExecutions;
+  List<UserWorkflowStepExecution> stepExecutions = [];
+
+  late Workflow workflow;
 
   late List<Map<String, dynamic>>
       inputs; // for now only keys => 1 key = 1 text field
@@ -24,64 +29,61 @@ class UserWorkflowExecution extends SerializableDataItem
   bool get waitingForValidation => _waitingForValidation;
 
   @override
-  UserWorkflowExecution.fromJson(Map<String, dynamic> data)
+  UserWorkflowExecution.fromJson(Map<String, dynamic> data, this.workflow)
       : super.fromJson(data) {
     pk = data['user_workflow_execution_pk'];
     userWorkflowPk = data['user_workflow_fk'];
-    stepExecutions = data['steps']
-        .map<UserWorkflowStepExecution>(
-            (step) => UserWorkflowStepExecution.fromJson(step))
-        .toList();
     inputs = data['inputs']
         .map<Map<String, dynamic>>((input) => input as Map<String, dynamic>)
         .toList();
     startDate =
         data['start_date'] != null ? DateTime.parse(data['start_date']) : null;
+
     session = WorkflowSession(
-        sessionId: data['session_id'],
-        userWorkflowExecutionPk: pk!,
-        onUserWorkflowStepExecutionInitialized: _initializeStepExecution,
-        onUserWorkflowStepExecutionReset: _resetStepExecution,
-        onUserWorkflowRunExecutionStarted: _startRunExecution,
-        onUserWorkflowRunExecutionEnded: _endRunExecution);
+      sessionId: data['session_id'],
+      userWorkflowExecutionPk: pk!,
+      onNewWorkflowStepExecution: _newStepExecution,
+      onUserWorkflowStepExecutionEnded: _stepExecutionEnded,
+      onUserWorkflowStepExecutionInvalidated: _stepExecutionInvalidated,
+    );
   }
 
-  void _initializeStepExecution(
-      int stepExecutionPk, List<UserWorkflowStepExecutionRun> runs) {
-    UserWorkflowStepExecution stepToInitialize =
-        stepExecutions.firstWhere((step) => step.pk == stepExecutionPk);
-    if (stepToInitialize.initialized) return;
-    stepToInitialize.initialize(runs);
-    _waitingForValidation = true;
-    notifyListeners();
-  }
-
-  void _resetStepExecution(int stepExecutionPk, int previousStepExecutionPk) {
-    UserWorkflowStepExecution stepToReset =
-        stepExecutions.firstWhere((step) => step.pk == previousStepExecutionPk);
-    bool reset = stepToReset.reset(stepExecutionPk);
-    if (reset) {
+  void _stepExecutionInvalidated(int stepExecutionPk) {
+    // is stepExecutionPk in stepExecutions ?
+    UserWorkflowStepExecution? stepExecution =
+        stepExecutions.firstWhereOrNull((step) => step.pk == stepExecutionPk);
+    if (stepExecution != null) {
+      // remove stepExecution from stepExecutions
+      stepExecutions.remove(stepExecution);
       _waitingForValidation = false;
       notifyListeners();
     }
   }
 
-  void _startRunExecution(int stepExecutionPk, int runExecutionPk) {
-    bool started = stepExecutions
-        .firstWhere((step) => step.pk == stepExecutionPk)
-        .startRun(runExecutionPk);
-    if (started) {
+  void _newStepExecution(
+      int stepExecutionPk, int stepFk, Map<String, dynamic> parameter) {
+    UserWorkflowStepExecution? stepExecution =
+        stepExecutions.firstWhereOrNull((step) => step.pk == stepExecutionPk);
+
+    if (stepExecution == null) {
       // else, message already received
+      WorkflowStep step =
+          workflow.steps.firstWhere((step) => step.pk == stepFk);
+      stepExecutions.add(UserWorkflowStepExecution(
+        pk: stepExecutionPk,
+        parameter: parameter,
+        step: step,
+      ));
       _waitingForValidation = false;
       notifyListeners();
     }
   }
 
-  void _endRunExecution(int stepExecutionPk, int runExecutionPk,
-      List<Map<String, dynamic>> result) {
+  void _stepExecutionEnded(
+      int stepExecutionPk, List<Map<String, dynamic>> result) {
     bool ended = stepExecutions
         .firstWhere((step) => step.pk == stepExecutionPk)
-        .endRun(runExecutionPk, result);
+        .end(result);
     if (ended) {
       _waitingForValidation = true;
       notifyListeners();

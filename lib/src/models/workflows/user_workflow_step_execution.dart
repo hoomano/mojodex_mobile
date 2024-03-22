@@ -1,30 +1,21 @@
-import 'package:mojodex_mobile/src/models/workflows/user_workflow_step.dart';
-import 'package:mojodex_mobile/src/models/workflows/user_workflow_step_execution_run.dart';
+import 'package:mojodex_mobile/src/models/http_caller.dart';
+import 'package:mojodex_mobile/src/models/workflows/workflow_step.dart';
 
-class UserWorkflowStepExecution {
+class UserWorkflowStepExecution with HttpCaller {
   late int pk;
   late WorkflowStep step;
-  late List<UserWorkflowStepExecutionRun> runs;
-  late bool initialized;
-  late bool validated;
-  List<Map<String, String>>? result;
+  bool validated = false;
+  List<Map<String, dynamic>>? result;
+  late Map<String, dynamic> parameter;
 
   UserWorkflowStepExecution(
-      {required this.pk,
-      required this.step,
-      required this.runs,
-      required this.initialized,
-      required this.validated});
+      {required this.pk, required this.step, required this.parameter});
 
   UserWorkflowStepExecution.fromJson(Map<String, dynamic> data) {
     pk = data['user_workflow_step_execution_pk'];
     step = WorkflowStep(pk: data['workflow_step_pk'], name: data['step_name']);
-    initialized = data['initialized'];
     validated = data['validated'];
-    runs = data['runs']
-        .map<UserWorkflowStepExecutionRun>(
-            (run) => UserWorkflowStepExecutionRun.fromJson(run))
-        .toList();
+    parameter = data['parameter'];
     result = data['result'];
   }
 
@@ -33,39 +24,37 @@ class UserWorkflowStepExecution {
       'user_workflow_step_execution_pk': pk,
       'workflow_step_pk': step.pk,
       'step_name': step.name,
-      'initialized': initialized,
       'validated': validated,
-      'runs': runs.map((run) => run.toJson()).toList(),
+      'parameter': parameter,
       'result': result
     };
   }
 
-  bool reset(int newStepExecutionPk) {
-    if (pk != newStepExecutionPk) {
-      pk = newStepExecutionPk;
-      runs = [];
-      initialized = false;
+  bool end(List<Map<String, dynamic>> result) {
+    if (this.result != null) return false;
+    this.result = result;
+    return true;
+  }
+
+  Future<bool> validate() async {
+    return await _send_backend_validation(true);
+  }
+
+  Future<bool> invalidate() async {
+    return await _send_backend_validation(false);
+  }
+
+  Future<bool> _send_backend_validation(bool userValidation) async {
+    Map<String, dynamic> body = {
+      "user_workflow_step_execution_pk": pk,
+      'validated': userValidation
+    };
+    Map<String, dynamic>? response =
+        await post(service: "user_workflow_step_execution", body: body);
+    if (response != null) {
+      validated = userValidation;
       return true;
     }
     return false;
-  }
-
-  bool startRun(int runExecutionPk) {
-    UserWorkflowStepExecutionRun runToStart =
-        runs.firstWhere((run) => run.pk == runExecutionPk);
-    return runToStart.start();
-  }
-
-  void initialize(List<UserWorkflowStepExecutionRun> runs) {
-    initialized = true;
-    this.runs = runs;
-  }
-
-  bool endRun(int runExecutionPk, List<Map<String, dynamic>> result) {
-    UserWorkflowStepExecutionRun runToEnd =
-        runs.firstWhere((run) => run.pk == runExecutionPk);
-    if (runToEnd.result != null) return false;
-    runToEnd.result = result;
-    return true;
   }
 }

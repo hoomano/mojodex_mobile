@@ -13,24 +13,21 @@ class StepExecutionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Opacity(
-      opacity: stepExecution.initialized ? 1 : 0.5,
+      opacity: 1,
       child: Container(
-        padding: EdgeInsets.all(ds.Spacing.base),
-        width: double.infinity,
-        child: Padding(
+          padding: EdgeInsets.all(ds.Spacing.base),
+          width: double.infinity,
+          child: Padding(
             padding: const EdgeInsets.all(ds.Spacing.mediumPadding),
-            child: Column(
-              children: [
-                Text(
-                  stepExecution.step.name,
-                  style: TextStyle(
-                      fontSize: ds.TextFontSize.h5,
-                      fontWeight: FontWeight.bold),
-                ),
-              ]..addAll(stepExecution.runs
-                  .map((run) => RunWidget(run: run, onReject: onReject))),
-            )),
-      ),
+            child: Column(children: [
+              Text(
+                stepExecution.step.name,
+                style: TextStyle(
+                    fontSize: ds.TextFontSize.h5, fontWeight: FontWeight.bold),
+              ),
+              RunWidget(stepExecution: stepExecution, onReject: onReject),
+            ]),
+          )),
     );
   }
 }

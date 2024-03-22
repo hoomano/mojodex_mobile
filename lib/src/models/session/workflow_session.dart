@@ -1,46 +1,48 @@
 import 'package:mojodex_mobile/src/models/session/session.dart';
-import 'package:mojodex_mobile/src/models/workflows/user_workflow_step_execution_run.dart';
 
 import 'messages/message.dart';
 import 'messages/user_message.dart';
 
 class WorkflowSession extends Session {
-  WorkflowSession(
-      {required super.sessionId,
-      required int userWorkflowExecutionPk,
-      required this.onUserWorkflowRunExecutionStarted,
-      required this.onUserWorkflowRunExecutionEnded,
-      required this.onUserWorkflowStepExecutionInitialized,
-      required this.onUserWorkflowStepExecutionReset}) {
+  WorkflowSession({
+    required super.sessionId,
+    required int userWorkflowExecutionPk,
+    required this.onNewWorkflowStepExecution,
+    required this.onUserWorkflowStepExecutionEnded,
+    required this.onUserWorkflowStepExecutionInvalidated,
+  }) {
     _userWorkflowExecutionPk = userWorkflowExecutionPk;
   }
 
   late int _userWorkflowExecutionPk;
 
-  final Function(int stepExecutionPk, int runExecutionPk)
-      onUserWorkflowRunExecutionStarted;
-  final Function(int stepExecutionPk, int runExecutionPk,
-      List<Map<String, dynamic>> result) onUserWorkflowRunExecutionEnded;
-  final Function(int stepExecutionPk, List<UserWorkflowStepExecutionRun> runs)
-      onUserWorkflowStepExecutionInitialized;
-  final Function(int stepExecutionPk, int previousStepExecutionPk)
-      onUserWorkflowStepExecutionReset;
+  final Function(
+          int stepExecutionPk, int stepFk, Map<String, dynamic> parameter)
+      onNewWorkflowStepExecution;
+  final Function(int stepExecutionPk, List<Map<String, dynamic>> result)
+      onUserWorkflowStepExecutionEnded;
+  final Function(int stepExecutionPk) onUserWorkflowStepExecutionInvalidated;
 
-  void onWorkflowRunStartedCallback(dynamic data) {
-    onUserWorkflowRunExecutionStarted(
-        data["step_execution_fk"], data["user_workflow_step_execution_run_pk"]);
+  void onNewWorkflowStepExecutionCallback(dynamic data) {
+    onNewWorkflowStepExecution(data["user_workflow_step_execution_pk"],
+        data['workflow_step_pk'], data["parameter"]);
   }
 
-  void onWorkflowRunEndedCallback(dynamic data) {
+  void onWorkflowStepExecutionInvalidatedCallback(dynamic data) {
+    onUserWorkflowStepExecutionInvalidated(
+        data["user_workflow_step_execution_pk"]);
+  }
+
+  void onWorkflowStepExecutionEndedCallback(dynamic data) {
     // data["result"] is a List<dynamic>
     List<Map<String, dynamic>> result = data["result"]
         .map<Map<String, dynamic>>((run) => Map<String, dynamic>.from(run))
         .toList();
-    onUserWorkflowRunExecutionEnded(data["step_execution_fk"],
-        data["user_workflow_step_execution_run_pk"], result);
+    onUserWorkflowStepExecutionEnded(
+        data["user_workflow_step_execution_pk"], result);
   }
 
-  void onWorkflowStepExecutionInitializedCallback(dynamic data) {
+  /* void onWorkflowStepExecutionInitializedCallback(dynamic data) {
     onUserWorkflowStepExecutionInitialized(
         data["user_workflow_step_execution_pk"],
         data['runs']
@@ -52,7 +54,7 @@ class WorkflowSession extends Session {
   void onWorkflowStepExecutionResetCallback(dynamic data) {
     onUserWorkflowStepExecutionReset(data["user_workflow_step_execution_pk"],
         data["previous_step_execution_pk"]);
-  }
+  }*/
 
   @override
   Map<String, dynamic> userMessageFormData(UserMessage message, String origin) {

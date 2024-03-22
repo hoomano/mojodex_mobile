@@ -8,4 +8,11 @@ class WorkflowStep {
     pk = data['workflow_step_pk'];
     name = data['step_name'];
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'workflow_step_pk': pk,
+      'step_name': name,
+    };
+  }
 }

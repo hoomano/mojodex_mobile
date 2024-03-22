@@ -1,17 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:mojodex_mobile/src/models/workflows/user_workflow_step_execution_run.dart';
 import 'package:provider/provider.dart';
 import 'package:timelines/timelines.dart';
 
 import '../../../../DS/design_system.dart' as ds;
 import '../../../../DS/theme/themes.dart';
+import '../../../models/workflows/user_workflow_step_execution.dart';
 
 class RunWidget extends StatefulWidget {
-  final UserWorkflowStepExecutionRun run;
+  final UserWorkflowStepExecution stepExecution;
   final Function() onReject;
-  const RunWidget({required this.run, required this.onReject, Key? key})
+  const RunWidget(
+      {required this.stepExecution, required this.onReject, Key? key})
       : super(key: key);
 
   @override
@@ -52,9 +53,11 @@ class _RunWidgetState extends State<RunWidget> {
     );
 
     final indicator;
-    if (widget.run.validated) {
+    if (widget.stepExecution.validated) {
       indicator = doneIndicator;
-    } else if (widget.run.started) {
+    } else if (widget.stepExecution.result == null ||
+        (widget.stepExecution.result != null &&
+            !widget.stepExecution.validated)) {
       indicator = runningIndicator;
     } else {
       indicator = notDoneIndicator;
@@ -78,13 +81,13 @@ class _RunWidgetState extends State<RunWidget> {
                     ),
                     Flexible(
                       child: Text(
-                        widget.run.parameter.toString(),
+                        widget.stepExecution.parameter.toString(),
                         style: TextStyle(fontSize: ds.TextFontSize.body2),
                       ),
                     ),
                   ],
                 ),
-                if (widget.run.result != null)
+                if (widget.stepExecution.result != null)
                   Padding(
                     padding: const EdgeInsets.all(ds.Spacing.smallPadding),
                     child: Container(
@@ -99,7 +102,7 @@ class _RunWidgetState extends State<RunWidget> {
                         padding: const EdgeInsets.all(ds.Spacing.smallPadding),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: widget.run.result!
+                            children: widget.stepExecution.result!
                                 .map(
                                   (r) => Text(
                                     r.toString(),
@@ -111,11 +114,12 @@ class _RunWidgetState extends State<RunWidget> {
                       ),
                     ),
                   ),
-                if (widget.run.result != null && !widget.run.validated)
+                if (widget.stepExecution.result != null &&
+                    !widget.stepExecution.validated)
                   RunValidationWidget(
                     onReject: () async {
                       // option 1: retourner sur le chat => Mais un peu trompeur pour le user: ça laisse penser qu'on peut demander n'importe quoi dans le chat
-                      bool success = await widget.run.invalidate();
+                      bool success = await widget.stepExecution.invalidate();
                       widget.onReject();
 
                       // option 2: invalider le run => Pour le debug
@@ -124,7 +128,7 @@ class _RunWidgetState extends State<RunWidget> {
                       // option 3: ouvrir un mini-chat ici même pour obtenir les précisions nécessaires
                     },
                     onValidate: () async {
-                      bool success = await widget.run.validate();
+                      bool success = await widget.stepExecution.validate();
                       if (success) {
                         setState(() {});
                       }

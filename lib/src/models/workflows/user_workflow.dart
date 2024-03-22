@@ -40,7 +40,7 @@ class UserWorkflow extends SerializableDataItem with HttpCaller {
     //  .map((dynamic jsonInput) => jsonInput as Map<String, dynamic>)
     //.toList();
     UserWorkflowExecution userWorkflowExecution =
-        UserWorkflowExecution.fromJson(userWorkflowExecutionData);
+        UserWorkflowExecution.fromJson(userWorkflowExecutionData, workflow);
     return userWorkflowExecution;
   }
 
