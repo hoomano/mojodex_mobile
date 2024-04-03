@@ -21,10 +21,9 @@ class UserWorkflowExecutionForm extends StatelessWidget {
               padding: const EdgeInsets.all(ds.Spacing.smallPadding),
               child: TextFormField(
                 decoration: InputDecoration(
-                  labelText: input['input_name'] ?? 'Input',
+                  labelText: input['input_name_for_user'] ?? 'Input',
                   border: OutlineInputBorder(),
                 ),
-                initialValue: input['default_value']?.toString(),
                 onChanged: (value) {
                   input['value'] = value;
                 },
