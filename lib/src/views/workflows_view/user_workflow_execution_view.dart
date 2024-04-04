@@ -85,6 +85,10 @@ class _UserWorkflowExecutionViewState extends State<UserWorkflowExecutionView>
               _tabController.index != 1) {
             _tabController.animateTo(1);
           }
+          if (userWorkflowExecution.producedText != null &&
+              _tabController.index != 2) {
+            _tabController.animateTo(2);
+          }
           return MojodexScaffold(
             appBarTitle: "Workflow ${userWorkflowExecution.pk}",
             safeAreaOverflow: false,
@@ -124,7 +128,7 @@ class _UserWorkflowExecutionViewState extends State<UserWorkflowExecutionView>
                     _tabController.animateTo(0);
                   },
                 ),
-                ResultView()
+                ResultView(userWorkflowExecution: userWorkflowExecution)
               ],
             ),
           );

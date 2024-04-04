@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mojodex_mobile/src/models/session/session.dart';
 
 import '../error_notifier.dart';
-import '../tasks/produced_text.dart';
+import '../produced_text.dart';
 import 'messages/message.dart';
 import 'messages/mojo_message.dart';
 import 'messages/user_message.dart';

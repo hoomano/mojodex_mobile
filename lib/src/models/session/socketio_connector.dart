@@ -53,6 +53,8 @@ class SocketioConnector {
       "workflow_step_execution_started";
   static const String _workflowStepExecutionEndedEventKey =
       "workflow_step_execution_ended";
+  static const String _workflowExecutionProducedTextEventKey =
+      "workflow_execution_produced_text";
 
   /// List of all the events to emit to
   static const String _leaveSessionEventKey = 'leave_session';
@@ -283,6 +285,22 @@ class SocketioConnector {
     }
   }
 
+  void _workflowExecutionProducedTextCallback(data) {
+    try {
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        try {
+          WorkflowSession session = s as WorkflowSession;
+          session.onWorkflowExecutionProducedTextCallback(data);
+        } catch (e) {
+          //do nothing
+        }
+      }
+    } catch (e) {
+      logger.shout("Error in workflow produced text callback: $e");
+    }
+  }
+
   void _onMultipleConnect() {
     logger.info("👉 multiple connect");
   }
@@ -329,6 +347,8 @@ class SocketioConnector {
         _workflowStepExecutionStartedCallback);
     _socket.on(_workflowStepExecutionEndedEventKey,
         _workflowStepExecutionEndedCallback);
+    _socket.on(_workflowExecutionProducedTextEventKey,
+        _workflowExecutionProducedTextCallback);
   }
 
   /// Connect to the socket

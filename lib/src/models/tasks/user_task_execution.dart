@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/models/http_caller.dart';
+import 'package:mojodex_mobile/src/models/produced_text.dart';
 import 'package:mojodex_mobile/src/models/serializable_data_item.dart';
 import 'package:mojodex_mobile/src/models/session/messages/user_message.dart';
 import 'package:mojodex_mobile/src/models/session/task_session.dart';
 import 'package:mojodex_mobile/src/models/tasks/edit_text_actions.dart';
-import 'package:mojodex_mobile/src/models/tasks/produced_text.dart';
 import 'package:mojodex_mobile/src/models/tasks/tool/google_search_tool.dart';
 import 'package:mojodex_mobile/src/models/tasks/tool/internal_memory_tool.dart';
 import 'package:mojodex_mobile/src/models/tasks/tool/task_tool_execution.dart';

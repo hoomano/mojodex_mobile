@@ -7,6 +7,7 @@ import 'package:mojodex_mobile/src/models/workflows/user_workflow_step_execution
 import 'package:mojodex_mobile/src/models/workflows/workflow.dart';
 import 'package:mojodex_mobile/src/models/workflows/workflow_step.dart';
 
+import '../produced_text.dart';
 import '../session/workflow_session.dart';
 
 class UserWorkflowExecution extends SerializableDataItem
@@ -16,6 +17,9 @@ class UserWorkflowExecution extends SerializableDataItem
   List<UserWorkflowStepExecution> stepExecutions = [];
 
   late Workflow workflow;
+
+  /// the produced text delivered by this task execution
+  ProducedText? producedText;
 
   late List<Map<String, dynamic>>
       inputs; // for now only keys => 1 key = 1 text field
@@ -45,6 +49,11 @@ class UserWorkflowExecution extends SerializableDataItem
       onNewWorkflowStepExecution: _newStepExecution,
       onUserWorkflowStepExecutionEnded: _stepExecutionEnded,
       onUserWorkflowStepExecutionInvalidated: _stepExecutionInvalidated,
+      onUserWorkflowReceivedProducedText: (producedText) {
+        if (this.producedText != null) return;
+        this.producedText = producedText;
+        notifyListeners();
+      },
     );
   }
 

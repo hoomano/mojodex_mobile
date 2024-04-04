@@ -1,4 +1,4 @@
-import '../session/messages/audio_manager.dart';
+import 'session/messages/audio_manager.dart';
 
 class ProducedText {
   /// the produced text pk associated to this task execution
@@ -15,14 +15,10 @@ class ProducedText {
 
   AudioManager? audioManager;
 
-  ProducedText({
-    this.producedTextPk,
-    this.producedTextVersionPk,
-    this.title,
-    this.production,
-    this.audioManager
-    });
-
-  
-
+  ProducedText(
+      {this.producedTextPk,
+      this.producedTextVersionPk,
+      this.title,
+      this.production,
+      this.audioManager});
 }

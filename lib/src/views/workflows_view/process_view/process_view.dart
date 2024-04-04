@@ -13,8 +13,6 @@ class ProcessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        '👉 ProcessView.build - len(stepExecutions): ${userWorkflowExecution.stepExecutions.length}');
     return Center(
         child: SingleChildScrollView(
       child: Column(

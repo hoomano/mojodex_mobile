@@ -1,16 +1,17 @@
 import 'package:mojodex_mobile/src/models/session/session.dart';
 
+import '../produced_text.dart';
 import 'messages/message.dart';
 import 'messages/user_message.dart';
 
 class WorkflowSession extends Session {
-  WorkflowSession({
-    required super.sessionId,
-    required int userWorkflowExecutionPk,
-    required this.onNewWorkflowStepExecution,
-    required this.onUserWorkflowStepExecutionEnded,
-    required this.onUserWorkflowStepExecutionInvalidated,
-  }) {
+  WorkflowSession(
+      {required super.sessionId,
+      required int userWorkflowExecutionPk,
+      required this.onNewWorkflowStepExecution,
+      required this.onUserWorkflowStepExecutionEnded,
+      required this.onUserWorkflowStepExecutionInvalidated,
+      required this.onUserWorkflowReceivedProducedText}) {
     _userWorkflowExecutionPk = userWorkflowExecutionPk;
   }
 
@@ -22,6 +23,7 @@ class WorkflowSession extends Session {
   final Function(int stepExecutionPk, List<Map<String, dynamic>> result)
       onUserWorkflowStepExecutionEnded;
   final Function(int stepExecutionPk) onUserWorkflowStepExecutionInvalidated;
+  final Function(ProducedText producedText) onUserWorkflowReceivedProducedText;
 
   void onNewWorkflowStepExecutionCallback(dynamic data) {
     onNewWorkflowStepExecution(data["user_workflow_step_execution_pk"],
@@ -42,19 +44,15 @@ class WorkflowSession extends Session {
         data["user_workflow_step_execution_pk"], result);
   }
 
-  /* void onWorkflowStepExecutionInitializedCallback(dynamic data) {
-    onUserWorkflowStepExecutionInitialized(
-        data["user_workflow_step_execution_pk"],
-        data['runs']
-            .map<UserWorkflowStepExecutionRun>(
-                (run) => UserWorkflowStepExecutionRun.fromJson(run))
-            .toList());
+  void onWorkflowExecutionProducedTextCallback(dynamic data) {
+    ProducedText producedText = ProducedText(
+        producedTextPk: data['produced_text_pk'],
+        producedTextVersionPk: data['produced_text_version_pk'],
+        title: data['produced_text_title'],
+        production: data['produced_text'],
+        audioManager: messages.isNotEmpty ? messages.first.audioManager : null);
+    onUserWorkflowReceivedProducedText(producedText);
   }
-
-  void onWorkflowStepExecutionResetCallback(dynamic data) {
-    onUserWorkflowStepExecutionReset(data["user_workflow_step_execution_pk"],
-        data["previous_step_execution_pk"]);
-  }*/
 
   @override
   Map<String, dynamic> userMessageFormData(UserMessage message, String origin) {
