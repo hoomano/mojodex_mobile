@@ -10,12 +10,12 @@ class Task extends SerializableDataItem {
   /// The icon of the task
   late String icon;
 
-  Task({
-    required int taskPk,
-    required this.name,
-    required this.description,
-    required this.icon,
-  }) : super(taskPk);
+  Task(
+      {required int taskPk,
+      required this.name,
+      required this.description,
+      required this.icon})
+      : super(taskPk);
 
   @override
   Task.fromJson(Map<String, dynamic> data) : super.fromJson(data) {
@@ -31,7 +31,7 @@ class Task extends SerializableDataItem {
       'task_pk': pk,
       'task_name': name,
       'task_description': description,
-      'task_icon': icon,
+      'task_icon': icon
     };
   }
 }

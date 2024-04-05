@@ -31,15 +31,34 @@ class UserWorkflowExecution extends SerializableDataItem
 
   bool _waitingForValidation = false;
   bool get waitingForValidation => _waitingForValidation;
+// used if userTaskExecution is created from the app
+  UserWorkflowExecution(
+      {required int userWorkflowExecutionPk,
+      required this.userWorkflowPk,
+      required this.inputs,
+      required String sessionId,
+      required this.workflow})
+      : super(userWorkflowExecutionPk) {
+    session = WorkflowSession(
+      sessionId: sessionId,
+      userWorkflowExecutionPk: pk!,
+      onNewWorkflowStepExecution: _newStepExecution,
+      onUserWorkflowStepExecutionEnded: _stepExecutionEnded,
+      onUserWorkflowStepExecutionInvalidated: _stepExecutionInvalidated,
+      onUserWorkflowReceivedProducedText: (producedText) {
+        if (this.producedText != null) return;
+        this.producedText = producedText;
+        notifyListeners();
+      },
+    );
+  }
 
   @override
   UserWorkflowExecution.fromJson(Map<String, dynamic> data, this.workflow)
       : super.fromJson(data) {
-    pk = data['user_workflow_execution_pk'];
-    userWorkflowPk = data['user_workflow_fk'];
-    inputs = data['inputs']
-        .map<Map<String, dynamic>>((input) => input as Map<String, dynamic>)
-        .toList();
+    pk = data['user_task_execution_pk'];
+    userWorkflowPk = data['user_task_pk'];
+
     startDate =
         data['start_date'] != null ? DateTime.parse(data['start_date']) : null;
 
@@ -71,19 +90,25 @@ class UserWorkflowExecution extends SerializableDataItem
 
   void _newStepExecution(
       int stepExecutionPk, int stepFk, Map<String, dynamic> parameter) {
+    print("🟢 _newStepExecution");
     UserWorkflowStepExecution? stepExecution =
         stepExecutions.firstWhereOrNull((step) => step.pk == stepExecutionPk);
-
+    print("🟢 stepExecution: $stepExecution");
     if (stepExecution == null) {
+      print("🟢 stepExecution == null");
       // else, message already received
+      print("==> WORKFLOW: $workflow");
       WorkflowStep step =
           workflow.steps.firstWhere((step) => step.pk == stepFk);
+      print("🟢 step: $step");
       stepExecutions.add(UserWorkflowStepExecution(
         pk: stepExecutionPk,
         parameter: parameter,
         step: step,
       ));
+      print("🟢 stepExecutions: $stepExecutions");
       _waitingForValidation = false;
+      print("🟢 notifyListeners()");
       notifyListeners();
     }
   }
@@ -113,11 +138,11 @@ class UserWorkflowExecution extends SerializableDataItem
   Future<Map<String, dynamic>?> start() async {
     try {
       Map<String, dynamic> body = {
-        "user_workflow_execution_pk": pk!,
-        'json_inputs': inputs
+        "user_task_execution_pk": pk!,
+        'inputs': inputs
       };
       Map<String, dynamic>? response =
-          await post(service: "user_workflow_execution", body: body);
+          await post(service: "user_task_execution_run", body: body);
       if (response != null) {
         startDate = DateTime.now();
       }

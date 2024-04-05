@@ -137,7 +137,7 @@ class _WorkflowCardState extends State<WorkflowCard> {
                   subtitle: Padding(
                     padding:
                         const EdgeInsets.only(top: ds.Spacing.smallPadding),
-                    child: Text(widget.userWorkflow.workflow.definition,
+                    child: Text(widget.userWorkflow.workflow.description,
                         textAlign: TextAlign.start,
                         style: TextStyle(
                             color: themeProvider.themeMode == ThemeMode.dark

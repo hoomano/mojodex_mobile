@@ -7,7 +7,6 @@ import 'package:mojodex_mobile/src/models/tasks/user_task_executions_history.dar
 import 'package:mojodex_mobile/src/models/tasks/user_tasks_list.dart';
 import 'package:mojodex_mobile/src/models/todos/todo-list.dart';
 import 'package:mojodex_mobile/src/models/user/user.dart';
-import 'package:mojodex_mobile/src/models/workflows/user_workflows_list.dart';
 import 'package:mojodex_mobile/src/notifications_manager.dart';
 import 'package:mojodex_mobile/src/purchase_manager/purchase_manager.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +39,7 @@ class _MojodexAppState extends State<MojodexApp> with WidgetsBindingObserver {
         // let's refresh the list each time the app is resumed
         User().userTaskExecutionsHistory.refreshLocalList();
         User().userTasksList.refreshLocalList();
-        User().userWorkflowsList.refreshLocalList();
+        // User().userWorkflowsList.refreshLocalList();
         User().todoList.refreshLocalList();
         if (User().language != null) {
           SystemLanguage().refreshFromBackend(languageCode: User().language!);
@@ -48,7 +47,7 @@ class _MojodexAppState extends State<MojodexApp> with WidgetsBindingObserver {
       } else if (state == AppLifecycleState.inactive) {
         User().userTaskExecutionsHistory.saveItemsToFile();
         User().userTasksList.saveItemsToFile();
-        User().userWorkflowsList.saveItemsToFile();
+        // User().userWorkflowsList.saveItemsToFile();
         User().todoList.saveItemsToFile();
       }
     }
@@ -62,8 +61,8 @@ class _MojodexAppState extends State<MojodexApp> with WidgetsBindingObserver {
               value: User().userTasksList),
           ChangeNotifierProvider<UserTaskExecutionsHistory>.value(
               value: User().userTaskExecutionsHistory),
-          ChangeNotifierProvider<UserWorkflowsList>.value(
-              value: User().userWorkflowsList),
+          //  ChangeNotifierProvider<UserWorkflowsList>.value(
+          //    value: User().userWorkflowsList),
           ChangeNotifierProvider<TodoList>.value(value: User().todoList),
           ChangeNotifierProvider<Microphone>(create: (context) => Microphone()),
           ChangeNotifierProvider(create: (_) => ThemeProvider()),

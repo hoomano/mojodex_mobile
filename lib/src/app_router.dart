@@ -5,7 +5,6 @@ import 'package:mojodex_mobile/src/views/home_screen/home_screen.dart';
 import 'package:mojodex_mobile/src/views/login_view/signin.dart';
 import 'package:mojodex_mobile/src/views/login_view/signup.dart';
 import 'package:mojodex_mobile/src/views/new_user_task_execution/new_user_task_execution.dart';
-import 'package:mojodex_mobile/src/views/new_user_workflow_execution/new_user_workflow_execution.dart';
 import 'package:mojodex_mobile/src/views/onboarding/onboarding_page_controller.dart';
 import 'package:mojodex_mobile/src/views/reset_password/reset_password_view.dart';
 import 'package:mojodex_mobile/src/views/settings_view/account_deletion_view/account_deletion.dart';
@@ -32,8 +31,8 @@ class AppRouter {
 
   factory AppRouter() => _instance;
 
-  String initialLocation = "/${NewUserWorkflowExecution.routeName}";
-  // "/${HomeScreen.routeName}"; //'/${UserTaskExecutionsListView.routeName}';
+  String initialLocation = "/${UserTaskExecutionsListView.routeName}";
+  //"/${HomeScreen.routeName}"; //'/${UserTaskExecutionsListView.routeName}';
 
   late GoRouter _goRouter;
   GoRouter get goRouter => _goRouter;
@@ -75,12 +74,12 @@ class AppRouter {
             builder: (context, state) {
               return NewUserTaskExecution();
             }),
-        GoRoute(
+        /* GoRoute(
             path: "/${NewUserWorkflowExecution.routeName}",
             name: NewUserWorkflowExecution.routeName,
             builder: (context, state) {
               return NewUserWorkflowExecution();
-            }),
+            }),*/
         GoRoute(
           path: '/${UserWorkflowExecutionView.routeName}',
           name: UserWorkflowExecutionView.routeName,

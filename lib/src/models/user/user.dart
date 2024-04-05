@@ -12,7 +12,6 @@ import 'package:mojodex_mobile/src/models/session/socketio_connector.dart';
 import 'package:mojodex_mobile/src/models/user/company.dart';
 import 'package:mojodex_mobile/src/models/user/goal.dart';
 import 'package:mojodex_mobile/src/models/user/user_shared_preferences.dart';
-import 'package:mojodex_mobile/src/models/workflows/user_workflows_list.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../microphone.dart';
@@ -252,8 +251,8 @@ class User extends ChangeNotifier with HttpCaller {
   UserTasksList get userTasksList => _userTasksList;
 
   /// List of userWorkflows for this user
-  UserWorkflowsList _userWorkflowsList = UserWorkflowsList();
-  UserWorkflowsList get userWorkflowsList => _userWorkflowsList;
+  // UserWorkflowsList _userWorkflowsList = UserWorkflowsList();
+  //UserWorkflowsList get userWorkflowsList => _userWorkflowsList;
 
   final TodoList _todoList = TodoList();
   TodoList get todoList => _todoList;

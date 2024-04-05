@@ -89,6 +89,7 @@ class _UserWorkflowExecutionViewState extends State<UserWorkflowExecutionView>
               _tabController.index != 2) {
             _tabController.animateTo(2);
           }
+          print("👉 Consumed");
           return MojodexScaffold(
             appBarTitle: "Workflow ${userWorkflowExecution.pk}",
             safeAreaOverflow: false,

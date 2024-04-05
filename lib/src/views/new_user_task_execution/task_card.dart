@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mojodex_mobile/src/models/workflows/workflow.dart';
 import 'package:mojodex_mobile/src/views/settings_view/plan_view/plan_view.dart';
 import 'package:mojodex_mobile/src/views/settings_view/settings_view.dart';
 import 'package:mojodex_mobile/src/views/skeletons/skeleton_item.dart';
@@ -13,7 +14,9 @@ import '../../models/session/messages/user_message.dart';
 import '../../models/tasks/user_task.dart';
 import '../../models/tasks/user_task_execution.dart';
 import '../../models/user/user.dart';
+import '../../models/workflows/user_worklow_execution.dart';
 import '../user_task_execution_view/user_task_execution_view.dart';
+import '../workflows_view/user_workflow_execution_view.dart';
 
 class TaskCard extends StatefulWidget {
   final UserTask userTask;
@@ -83,59 +86,110 @@ class _TaskCardState extends State<TaskCard> {
                       setState(() {
                         processing = true;
                       });
-                      UserTaskExecution? newUserTaskExecution =
-                          await widget.userTask.newExecution(
-                        userTaskExecutionFk: widget.userTaskExecutionFk,
-                        onPaymentError: () async {
-                          await User().purchaseManager.refreshPurchase();
-                          context.push(
-                              '/${SettingsView.routeName}/${PlanView.routeName}');
-                        },
-                        placeholderHeader:
-                            widget.userTaskExecutionPlaceholderHeader,
-                        placeholderBody:
-                            widget.userTaskExecutionPlaceholderBody,
-                      );
-                      if (newUserTaskExecution == null) {
-                        widget.onProcessingChanged();
-                        setState(() {
-                          processing = false;
-                        });
-                        return;
-                      }
 
-                      UserMessage? userMessage;
-                      if (widget.firstMessageText != null) {
-                        userMessage = UserMessage(
-                            text: widget.firstMessageText!, hasAudio: false);
-                      }
-                      UserTaskExecutionView userTaskExecutionView =
-                          UserTaskExecutionView(
-                              userTaskExecution: newUserTaskExecution,
-                              initialTab: UserTaskExecutionView.chatTabName,
-                              firstMessageToSend: userMessage,
-                              refreshUserTaskExecution: false);
+                      // if type of widget.userTask.task is workflow
+                      if (widget.userTask.task.runtimeType == Workflow) {
+                        UserWorkflowExecution? newUserWorkflowExecution =
+                            await widget.userTask.newWorkflowExecution();
 
-                      if (widget.onNavigateToUserTaskExecutionView != null) {
-                        widget.onNavigateToUserTaskExecutionView!(
-                            newUserTaskExecution.pk!);
-                      }
-                      if (widget.pushWithReplacement) {
-                        AppRouter().goRouter.pushReplacement(
-                            '/${UserTaskExecutionsListView.routeName}/${newUserTaskExecution.pk}',
-                            extra: userTaskExecutionView);
+                        if (newUserWorkflowExecution == null) {
+                          widget.onProcessingChanged();
+                          setState(() {
+                            processing = false;
+                          });
+                          return;
+                        }
+
+                        UserWorkflowExecutionView userWorkflowExecutionView =
+                            UserWorkflowExecutionView(
+                          userWorkflowExecution: newUserWorkflowExecution,
+                          refreshUserWorkflowExecution: false,
+                        );
+
+                        if (widget.onNavigateToUserTaskExecutionView != null) {
+                          widget.onNavigateToUserTaskExecutionView!(
+                              newUserWorkflowExecution.pk!);
+                        }
+
+                        if (widget.pushWithReplacement) {
+                          /* AppRouter().goRouter.pushReplacement(
+                      '/${UserWorkflowExecutionsListView.routeName}/${newUserWorkflowExecution.pk}',
+                      extra: userWorkflowExecutionView);*/
+                          AppRouter().goRouter.pushNamed(
+                              UserWorkflowExecutionView.routeName,
+                              extra: userWorkflowExecutionView);
+                        } else {
+                          setState(() {
+                            processing = false;
+                          });
+                          /* if (widget.navigateAsGo) {
+                    AppRouter().goRouter.go(
+                        '/${UserWorkflowExecutionsListView.routeName}/${newUserWorkflowExecution.pk}',
+                        extra: userWorkflowExecutionView);
+                  } else {
+                    AppRouter().goRouter.push(
+                        '/${UserWorkflowExecutionsListView.routeName}/${newUserWorkflowExecution.pk}',
+                        extra: userWorkflowExecutionView);
+                  }*/
+                          AppRouter().goRouter.pushNamed(
+                              UserWorkflowExecutionView.routeName,
+                              extra: userWorkflowExecutionView);
+                        }
                       } else {
-                        setState(() {
-                          processing = false;
-                        });
-                        if (widget.navigateAsGo) {
-                          AppRouter().goRouter.go(
+                        UserTaskExecution? newUserTaskExecution =
+                            await widget.userTask.newExecution(
+                          userTaskExecutionFk: widget.userTaskExecutionFk,
+                          onPaymentError: () async {
+                            await User().purchaseManager.refreshPurchase();
+                            context.push(
+                                '/${SettingsView.routeName}/${PlanView.routeName}');
+                          },
+                          placeholderHeader:
+                              widget.userTaskExecutionPlaceholderHeader,
+                          placeholderBody:
+                              widget.userTaskExecutionPlaceholderBody,
+                        );
+                        if (newUserTaskExecution == null) {
+                          widget.onProcessingChanged();
+                          setState(() {
+                            processing = false;
+                          });
+                          return;
+                        }
+
+                        UserMessage? userMessage;
+                        if (widget.firstMessageText != null) {
+                          userMessage = UserMessage(
+                              text: widget.firstMessageText!, hasAudio: false);
+                        }
+                        UserTaskExecutionView userTaskExecutionView =
+                            UserTaskExecutionView(
+                                userTaskExecution: newUserTaskExecution,
+                                initialTab: UserTaskExecutionView.chatTabName,
+                                firstMessageToSend: userMessage,
+                                refreshUserTaskExecution: false);
+
+                        if (widget.onNavigateToUserTaskExecutionView != null) {
+                          widget.onNavigateToUserTaskExecutionView!(
+                              newUserTaskExecution.pk!);
+                        }
+                        if (widget.pushWithReplacement) {
+                          AppRouter().goRouter.pushReplacement(
                               '/${UserTaskExecutionsListView.routeName}/${newUserTaskExecution.pk}',
                               extra: userTaskExecutionView);
                         } else {
-                          AppRouter().goRouter.push(
-                              '/${UserTaskExecutionsListView.routeName}/${newUserTaskExecution.pk}',
-                              extra: userTaskExecutionView);
+                          setState(() {
+                            processing = false;
+                          });
+                          if (widget.navigateAsGo) {
+                            AppRouter().goRouter.go(
+                                '/${UserTaskExecutionsListView.routeName}/${newUserTaskExecution.pk}',
+                                extra: userTaskExecutionView);
+                          } else {
+                            AppRouter().goRouter.push(
+                                '/${UserTaskExecutionsListView.routeName}/${newUserTaskExecution.pk}',
+                                extra: userTaskExecutionView);
+                          }
                         }
                       }
                     }

@@ -1,4 +1,4 @@
-import 'package:collection/collection.dart';
+/*import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/models/workflows/user_workflow.dart';
 
@@ -23,3 +23,4 @@ class UserWorkflowsList extends CachedList<UserWorkflow> {
         (userWorkflow) => userWorkflow.workflow.pk == workflowPk);
   }
 }
+*/

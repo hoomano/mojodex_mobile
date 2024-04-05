@@ -57,13 +57,13 @@ class WorkflowSession extends Session {
   @override
   Map<String, dynamic> userMessageFormData(UserMessage message, String origin) {
     Map<String, dynamic> formData = super.userMessageFormData(message, origin);
-    formData['user_workflow_execution_pk'] = _userWorkflowExecutionPk;
+    formData['user_task_execution_pk'] = _userWorkflowExecutionPk;
     return formData;
   }
 
   @override
   Future<Map<String, dynamic>?> sendUserMessage(UserMessage message,
-      {int retry = 3, String origin = 'workflow'}) async {
+      {int retry = 3, String origin = 'task'}) async {
     return super.sendUserMessage(message, retry: retry, origin: origin);
   }
 

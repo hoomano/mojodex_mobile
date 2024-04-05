@@ -2,8 +2,10 @@ import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/models/http_caller.dart';
 import 'package:mojodex_mobile/src/models/tasks/task.dart';
 import 'package:mojodex_mobile/src/models/tasks/user_task_execution.dart';
+import 'package:mojodex_mobile/src/models/workflows/workflow.dart';
 
 import '../serializable_data_item.dart';
+import '../workflows/user_worklow_execution.dart';
 
 class UserTask extends SerializableDataItem with HttpCaller {
   // Logger
@@ -20,7 +22,8 @@ class UserTask extends SerializableDataItem with HttpCaller {
   UserTask.fromJson(Map<String, dynamic> data) : super.fromJson(data) {
     pk = data['user_task_pk'];
     _enabled = data['enabled'];
-    task = Task.fromJson(data);
+    bool isWorkflow = data['task_type'] == 'workflow';
+    task = isWorkflow ? Workflow.fromJson(data) : Task.fromJson(data);
   }
 
   @override
@@ -76,5 +79,23 @@ class UserTask extends SerializableDataItem with HttpCaller {
       logger.shout("Error in userTaskExecution exception: $e");
       return null;
     }
+  }
+
+  Future<UserWorkflowExecution?> newWorkflowExecution() async {
+    Map<String, dynamic>? userWorkflowExecutionData = await _putNewExecution();
+    if (userWorkflowExecutionData == null) return null;
+    List<dynamic> jsonInputsData = userWorkflowExecutionData["json_input"];
+    // turn to List<Map<String, dynamic>>
+    List<Map<String, dynamic>> jsonInputs = jsonInputsData
+        .map((dynamic jsonInput) => jsonInput as Map<String, dynamic>)
+        .toList();
+    UserWorkflowExecution userWorkflowExecution = UserWorkflowExecution(
+        userWorkflowExecutionPk:
+            userWorkflowExecutionData["user_task_execution_pk"],
+        userWorkflowPk: pk!,
+        inputs: jsonInputs,
+        sessionId: userWorkflowExecutionData["session_id"],
+        workflow: task as Workflow);
+    return userWorkflowExecution;
   }
 }

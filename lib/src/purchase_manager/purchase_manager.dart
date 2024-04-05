@@ -135,7 +135,7 @@ class PurchaseManager extends ChangeNotifier with HttpCaller {
 
       _purchaseInitialized = true;
       await User().userTasksList.loadMoreItems(offset: 0);
-      await User().userWorkflowsList.loadMoreItems(offset: 0);
+      //await User().userWorkflowsList.loadMoreItems(offset: 0);
       notifyListeners();
     } catch (e) {
       logger.severe("Error while refreshing purchase: $e");

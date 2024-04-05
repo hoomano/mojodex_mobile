@@ -9,7 +9,6 @@ import '../../../DS/theme/themes.dart';
 import '../../models/language/system_language.dart';
 import '../../models/user/user.dart';
 import '../home_screen/home_screen.dart';
-import '../new_user_workflow_execution/new_user_workflow_execution.dart';
 import '../settings_view/settings_view.dart';
 import '../todos_view/todos_view.dart';
 import '../widgets/profile_picture.dart';
@@ -41,13 +40,13 @@ class AppDrawer extends StatelessWidget {
                     ),
                     title: "Home",
                     routeToGo: HomeScreen.routeName),
-                DrawerPageItem(
+                /* DrawerPageItem(
                     icon: ds.DesignIcon.suitcase(
                       size: ds.TextFontSize.body1,
                     ),
                     title: "New workflow",
                     replacement: false,
-                    routeToGo: NewUserWorkflowExecution.routeName),
+                    routeToGo: NewUserWorkflowExecution.routeName),*/
                 DrawerPageItem(
                     icon: ds.DesignIcon.addPlus(
                       size: ds.TextFontSize.body1,

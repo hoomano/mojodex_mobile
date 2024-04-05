@@ -21,11 +21,11 @@ class UserWorkflowExecutionForm extends StatelessWidget {
               padding: const EdgeInsets.all(ds.Spacing.smallPadding),
               child: TextFormField(
                 decoration: InputDecoration(
-                  labelText: input['input_name_for_user'] ?? 'Input',
+                  labelText: input['input_name'],
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
-                  input['value'] = value;
+                  input['input_value'] = value;
                 },
                 maxLines: null, // allows dynamic resizing
               ),
