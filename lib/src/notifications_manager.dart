@@ -122,7 +122,7 @@ class NotificationsManager {
           }
           UserTaskExecution? newUserTaskExecution = await userTask.newExecution(
             onPaymentError: () async {
-              await User().purchaseManager.refreshPurchase();
+              await User().roleManager.refreshRole();
               AppRouter()
                   .goRouter
                   .push('/${SettingsView.routeName}/${PlanView.routeName}');

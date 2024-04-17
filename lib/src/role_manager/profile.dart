@@ -1,4 +1,4 @@
-class Product {
+class Profile {
   final String name;
   final List<String> tasks;
   final int? nValidityDays;
@@ -13,7 +13,7 @@ class Product {
   get isPackage => nTasksLimit != null;
   get description => "- ${tasks.join('\n\n- ')}";
 
-  Product(
+  Profile(
       {required this.name,
       required this.tasks,
       required this.isFree,

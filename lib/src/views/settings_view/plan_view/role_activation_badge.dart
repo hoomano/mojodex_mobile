@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 
 import '../../../../DS/design_system.dart' as ds;
 
-class PurchaseActivationBadge extends StatelessWidget {
+class RoleActivationBadge extends StatelessWidget {
   final bool active;
-  PurchaseActivationBadge({required this.active, Key? key}) : super(key: key);
+  RoleActivationBadge({required this.active, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

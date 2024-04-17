@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/models/language/system_language.dart';
-import 'package:mojodex_mobile/src/views/settings_view/plan_view/product_card.dart';
-import 'package:mojodex_mobile/src/views/settings_view/plan_view/purchase_activation_badge.dart';
-import 'package:mojodex_mobile/src/views/settings_view/plan_view/purchase_usage.dart';
+import 'package:mojodex_mobile/src/views/settings_view/plan_view/profile_card.dart';
+import 'package:mojodex_mobile/src/views/settings_view/plan_view/role_activation_badge.dart';
+import 'package:mojodex_mobile/src/views/settings_view/plan_view/role_usage.dart';
 import 'package:mojodex_mobile/src/views/widgets/common_scaffold.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletons/skeletons.dart';
 
 import '../../../../DS/design_system.dart' as ds;
 import '../../../../DS/theme/themes.dart';
-import '../../../purchase_manager/purchase_manager.dart';
+import '../../../role_manager/role_manager.dart';
 
 class PlanView extends StatelessWidget {
   static String routeName = "plan";
@@ -23,39 +23,37 @@ class PlanView extends StatelessWidget {
     return MojodexScaffold(
         appBarTitle: labelsProvider.getText(key: "plan.appBarTitle"),
         safeAreaOverflow: false,
-        body: Consumer<PurchaseManager>(
-            builder: (context, purchaseManager, child) {
-          if (purchaseManager.currentPurchases == null) {
+        body: Consumer<RoleManager>(builder: (context, roleManager, child) {
+          if (roleManager.currentRoles == null) {
             return const PlanBannerSkeleton();
           }
 
-          List<Widget> currentPurchases = purchaseManager.currentPurchases!
-              .map((purchase) => ProductCard(
-                    product: purchase.product,
+          List<Widget> currentRoles = roleManager.currentRoles!
+              .map((role) => ProfileCard(
+                    profile: role.profile,
                     child: Column(
                       children: [
-                        PurchaseActivationBadge(active: true),
+                        RoleActivationBadge(active: true),
                         ds.Space.verticalLarge,
-                        if (purchase.product.nValidityDays != null &&
-                            purchase.product.nTasksLimit != null)
-                          PurchaseUsage(purchase: purchase)
+                        if (role.profile.nValidityDays != null &&
+                            role.profile.nTasksLimit != null)
+                          RoleUsage(role: role)
                       ],
                     ),
                   ))
               .toList();
 
-          List<Widget> expiredPurchases =
-              purchaseManager.expiredPurchases == null
-                  ? []
-                  : purchaseManager.expiredPurchases!
-                      .map((purchase) => ProductCard(
-                            product: purchase.product,
-                            child: PurchaseActivationBadge(active: false),
-                          ))
-                      .toList();
+          List<Widget> expiredRoles = roleManager.expiredRoles == null
+              ? []
+              : roleManager.expiredRoles!
+                  .map((role) => ProfileCard(
+                        profile: role.profile,
+                        child: RoleActivationBadge(active: false),
+                      ))
+                  .toList();
 
-          List<Widget> purchasableProducts = purchaseManager.purchasableProducts
-              .map((product) => ProductCard(product: product))
+          List<Widget> availableProfiles = roleManager.availableProfiles
+              .map((profile) => ProfileCard(profile: profile))
               .toList();
 
           return Center(
@@ -89,8 +87,8 @@ class PlanView extends StatelessWidget {
                         ),
                         ds.Space.verticalLarge,
                       ]
-                        ..addAll(currentPurchases)
-                        ..addAll(expiredPurchases)
+                        ..addAll(currentRoles)
+                        ..addAll(expiredRoles)
                         ..addAll([
                           ds.Space.verticalLarge,
                           Align(
@@ -107,7 +105,7 @@ class PlanView extends StatelessWidget {
                           ),
                           ds.Space.verticalLarge,
                         ])
-                        ..addAll(purchasableProducts)),
+                        ..addAll(availableProfiles)),
                 )),
           );
         }));

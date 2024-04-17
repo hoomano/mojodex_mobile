@@ -15,7 +15,7 @@ import 'package:mojodex_mobile/src/models/user/user_shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../microphone.dart';
-import '../../purchase_manager/purchase_manager.dart';
+import '../../role_manager/role_manager.dart';
 import '../calendar_manager/calendar_manager.dart';
 import '../home_chat/home_chat.dart';
 import '../status_bar/calendar_suggestion.dart';
@@ -25,7 +25,7 @@ import '../todos/todo-list.dart';
 
 /// This class is a Singleton representing the logged User
 class User extends ChangeNotifier with HttpCaller {
-  final PurchaseManager purchaseManager = PurchaseManager();
+  final RoleManager roleManager = RoleManager();
 
   // Logger
   final Logger logger = Logger('User');
@@ -84,8 +84,8 @@ class User extends ChangeNotifier with HttpCaller {
         CalendarSuggestion().init();
       }
 
-      purchaseManager.init().then((value) {
-        //purchaseManager.init() also runs userTasksList.loadMoreItems(offset: 0)
+      roleManager.init().then((value) {
+        //roleManager.init() also runs userTasksList.loadMoreItems(offset: 0)
         userTaskExecutionsHistory.loadMoreItems(offset: 0).then((value) {
           todoList.loadMoreItems(offset: 0);
         });
@@ -100,7 +100,7 @@ class User extends ChangeNotifier with HttpCaller {
       final result = getOnboardingPresented(); // This returns a FutureOr<bool>
       bool presented = result is Future<bool> ? await result : result;
       if (!presented) {
-        await purchaseManager.getProductCategories();
+        await roleManager.getProfileCategories();
       } else {
         await HomeChat().init();
       }

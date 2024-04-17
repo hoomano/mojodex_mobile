@@ -4,22 +4,22 @@ import 'package:provider/provider.dart';
 
 import '../../../../DS/design_system.dart' as ds;
 import '../../../../DS/theme/themes.dart';
-import '../../../purchase_manager/purchase.dart';
+import '../../../role_manager/role.dart';
 
-class PurchaseUsage extends StatelessWidget {
-  final Purchase purchase;
+class RoleUsage extends StatelessWidget {
+  final Role role;
 
-  PurchaseUsage({required this.purchase, Key? key}) : super(key: key);
+  RoleUsage({required this.role, Key? key}) : super(key: key);
 
   String getUsageLimitText(labelsProvider) {
     String text = "";
-    if (purchase.product.nValidityDays != null) {
+    if (role.profile.nValidityDays != null) {
       text +=
-          "\n\n 🗓️ ${purchase.remainingDays} ${labelsProvider.getText(key: "plan.purchaseUsageCard.remainingDaysSuffix")}";
+          "\n\n 🗓️ ${role.remainingDays} ${labelsProvider.getText(key: "plan.purchaseUsageCard.remainingDaysSuffix")}";
     }
-    if (purchase.product.nTasksLimit != null) {
+    if (role.profile.nTasksLimit != null) {
       text +=
-          "\n\n ✓ ${purchase.nTasksConsumed}/${purchase.product.nTasksLimit} ${labelsProvider.getText(key: "plan.purchaseUsageCard.nTasksLimitSuffix")}";
+          "\n\n ✓ ${role.nTasksConsumed}/${role.profile.nTasksLimit} ${labelsProvider.getText(key: "plan.purchaseUsageCard.nTasksLimitSuffix")}";
     }
     return text;
   }

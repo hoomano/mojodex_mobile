@@ -87,7 +87,7 @@ class _TaskCardState extends State<TaskCard> {
                           await widget.userTask.newExecution(
                         userTaskExecutionFk: widget.userTaskExecutionFk,
                         onPaymentError: () async {
-                          await User().purchaseManager.refreshPurchase();
+                          await User().roleManager.refreshRole();
                           context.push(
                               '/${SettingsView.routeName}/${PlanView.routeName}');
                         },

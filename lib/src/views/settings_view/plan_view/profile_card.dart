@@ -4,23 +4,23 @@ import 'package:provider/provider.dart';
 
 import '../../../../DS/design_system.dart' as ds;
 import '../../../../DS/theme/themes.dart';
-import '../../../purchase_manager/product.dart';
+import '../../../role_manager/profile.dart';
 
-class ProductCard extends StatelessWidget {
-  final Product product;
+class ProfileCard extends StatelessWidget {
+  final Profile profile;
   final Widget? child;
 
-  ProductCard({required this.product, this.child, Key? key}) : super(key: key);
+  ProfileCard({required this.profile, this.child, Key? key}) : super(key: key);
 
   String getUsageLimitText(labelsProvider) {
     String text = "";
-    if (product.nValidityDays != null) {
+    if (profile.nValidityDays != null) {
       text +=
-          "\n\n- ${product.nValidityDays} ${labelsProvider.getText(key: "plan.productCard.nValidityDaysSuffix")}";
+          "\n\n- ${profile.nValidityDays} ${labelsProvider.getText(key: "plan.productCard.nValidityDaysSuffix")}";
     }
-    if (product.nTasksLimit != null) {
+    if (profile.nTasksLimit != null) {
       text +=
-          "\n\n- ${product.nTasksLimit} ${labelsProvider.getText(key: "plan.productCard.nTasksLimitSuffix")}";
+          "\n\n- ${profile.nTasksLimit} ${labelsProvider.getText(key: "plan.productCard.nTasksLimitSuffix")}";
     }
     return text;
   }
@@ -41,7 +41,7 @@ class ProductCard extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              product.name,
+              profile.name,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: ds.TextFontSize.h5,
@@ -58,7 +58,7 @@ class ProductCard extends StatelessWidget {
               ),
             ),
             Text(
-              product.description,
+              profile.description,
               style: TextStyle(
                   color: themeProvider.themeMode == ThemeMode.dark
                       ? ds.DesignColor.grey.grey_3
@@ -66,7 +66,7 @@ class ProductCard extends StatelessWidget {
                   fontSize: ds.TextFontSize.body2),
             ),
             ds.Space.verticalLarge,
-            if (product.nValidityDays != null || product.nTasksLimit != null)
+            if (profile.nValidityDays != null || profile.nTasksLimit != null)
               Text(
                 "\n${labelsProvider.getText(key: "plan.productCard.usageLimitTitle")} ${getUsageLimitText(labelsProvider)}",
                 style: TextStyle(

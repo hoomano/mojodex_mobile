@@ -117,7 +117,7 @@ class _SettingsViewState extends State<SettingsView> {
                             text: labelsProvider.getText(
                                 key: "account.planButton"),
                             onTap: (context) async {
-                              await User().purchaseManager.refreshPurchase();
+                              await User().roleManager.refreshRole();
                               context.go(
                                   '/${SettingsView.routeName}/${PlanView.routeName}');
                             }),

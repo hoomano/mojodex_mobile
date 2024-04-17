@@ -1,10 +1,10 @@
-class ProductCategory {
-  final int productCategoryPk;
+class ProfileCategory {
+  final int profileCategoryPk;
   final String name;
   final String emoji;
   final String description;
-  ProductCategory(
-      {required this.productCategoryPk,
+  ProfileCategory(
+      {required this.profileCategoryPk,
       required this.name,
       required this.emoji,
       required this.description});

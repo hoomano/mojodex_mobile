@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:mojodex_mobile/src/purchase_manager/product.dart';
+import 'package:mojodex_mobile/src/role_manager/profile.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../DS/design_system.dart' as ds;
 import '../../../../DS/theme/themes.dart';
 
-class ProductBuyButtons extends StatelessWidget {
-  final Product product;
+class ProfileBuyButtons extends StatelessWidget {
+  final Profile profile;
   final String price;
   final Function onBuyNowPressed;
   final Function onContactUs;
 
-  const ProductBuyButtons(
-      {required this.product,
+  const ProfileBuyButtons(
+      {required this.profile,
       required this.price,
       required this.onBuyNowPressed,
       required this.onContactUs,
@@ -26,10 +26,10 @@ class ProductBuyButtons extends StatelessWidget {
       children: [
         ds.Button.fill(
             onPressed: () => onBuyNowPressed(),
-            text: product.isSubscription && !product.isPackage
+            text: profile.isSubscription && !profile.isPackage
                 ? "Subscribe for $price per month"
                 : "Buy now for $price"),
-        if (product.isSubscription)
+        if (profile.isSubscription)
           Padding(
             padding: const EdgeInsets.all(ds.Spacing.mediumPadding),
             child: Column(

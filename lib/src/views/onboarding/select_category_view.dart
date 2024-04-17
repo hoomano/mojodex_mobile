@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mojodex_mobile/DS/design_system.dart' as ds;
-import 'package:mojodex_mobile/src/purchase_manager/product_category.dart';
+import 'package:mojodex_mobile/src/role_manager/profile_category.dart';
 import 'package:mojodex_mobile/src/views/widgets/common_scaffold.dart';
 import 'package:provider/provider.dart';
 
@@ -11,10 +11,10 @@ import '../../models/user/user.dart';
 class SelectCategoryView extends StatefulWidget {
   final Function() nextPage;
 
-  late List<ProductCategory> categories;
+  late List<ProfileCategory> categories;
 
   SelectCategoryView({required this.nextPage, Key? key}) : super(key: key) {
-    categories = User().purchaseManager.productCategories;
+    categories = User().roleManager.profileCategories;
   }
 
   @override
@@ -27,13 +27,13 @@ class _SelectCategoryViewState extends State<SelectCategoryView> {
   int? _selectedCategoryIndex;
 
   Future<bool> setCategory(int categoryPk) async {
-    return await User().purchaseManager.activateFreeTrial(categoryPk);
+    return await User().roleManager.activateFreeTrial(categoryPk);
   }
 
   void onNextButtonClick(BuildContext context) async {
     setState(() => _nextButtonClicked = true);
 
-    int category = widget.categories[_selectedCategoryIndex!].productCategoryPk;
+    int category = widget.categories[_selectedCategoryIndex!].profileCategoryPk;
     bool success = await setCategory(category);
     setState(() => _nextButtonClicked = false);
     if (success) {

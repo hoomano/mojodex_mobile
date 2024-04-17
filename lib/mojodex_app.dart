@@ -8,7 +8,7 @@ import 'package:mojodex_mobile/src/models/tasks/user_tasks_list.dart';
 import 'package:mojodex_mobile/src/models/todos/todo-list.dart';
 import 'package:mojodex_mobile/src/models/user/user.dart';
 import 'package:mojodex_mobile/src/notifications_manager.dart';
-import 'package:mojodex_mobile/src/purchase_manager/purchase_manager.dart';
+import 'package:mojodex_mobile/src/role_manager/role_manager.dart';
 import 'package:provider/provider.dart';
 
 import '../../../DS/design_system.dart' as ds;
@@ -63,8 +63,7 @@ class _MojodexAppState extends State<MojodexApp> with WidgetsBindingObserver {
           ChangeNotifierProvider<Microphone>(create: (context) => Microphone()),
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
           ChangeNotifierProvider(create: (_) => SystemLanguage()),
-          ChangeNotifierProvider<PurchaseManager>.value(
-              value: User().purchaseManager),
+          ChangeNotifierProvider<RoleManager>.value(value: User().roleManager),
         ],
         child: Consumer<User>(builder: (context, user, child) {
           AppRouter().updateRouter(user: user);

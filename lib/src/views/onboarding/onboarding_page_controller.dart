@@ -79,7 +79,7 @@ class _OnboardingPagesController extends State<OnboardingPagesController> {
       }
     });
     List<Widget> pages = [
-      if (User().purchaseManager.currentPurchases != null)
+      if (User().roleManager.currentRoles != null)
         SelectCategoryView(
           nextPage: nextPage,
         ),

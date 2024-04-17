@@ -41,7 +41,7 @@ class UserTask extends SerializableDataItem with HttpCaller {
         await _putNewExecution(userTaskExecutionFk: userTaskExecutionFk);
     if (userTaskExecutionData == null) return null;
     if (userTaskExecutionData.containsKey("error") &&
-        userTaskExecutionData["error"] == "no_purchase") {
+        ["no_purchase", "no_role"].contains(userTaskExecutionData["error"])) {
       onPaymentError();
       return null;
     }
