@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../DS/design_system.dart' as ds;
 import '../../models/user/user.dart';
 
 class GoogleSignInButton extends StatefulWidget {
-  final Function onLoginConfirmation;
-  final Function onLoginFailure;
+  final Function() onLoginConfirmation;
+  final Function(Map<String, dynamic>?, BuildContext) onLoginFailure;
   GoogleSignInButton(
       {Key? key,
       required this.onLoginConfirmation,
@@ -52,17 +53,48 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     if (_confirmed) {
       await widget.onLoginConfirmation();
     } else if (_failure) {
-      widget.onLoginFailure(userData);
+      widget.onLoginFailure(userData, context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return _processing
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : ElevatedButton(
-            onPressed: _loginWithGoogle, child: Text("Google Sign In"));
+    return Padding(
+      padding: EdgeInsets.all(ds.Spacing.largePadding),
+      child: _processing
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : MaterialButton(
+              onPressed: _loginWithGoogle,
+              shape: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: ds.DesignColor.grey.grey_1,
+                  width: 1,
+                ),
+                borderRadius: const BorderRadius.all(Radius.circular(6)),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(ds.Spacing.smallPadding),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/images/google_logo.png',
+                      width: 24,
+                      height: 24,
+                    ),
+                    Spacer(),
+                    Text(
+                      "Google",
+                      style: TextStyle(
+                        fontSize: 24,
+                      ),
+                    ),
+                    Spacer(),
+                  ],
+                ),
+              ),
+            ),
+    );
   }
 }
