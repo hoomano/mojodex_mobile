@@ -213,6 +213,27 @@ class User extends ChangeNotifier with HttpCaller {
     return userData;
   }
 
+  Future<Map<String, dynamic>?> signInWithApple(
+      String email, String authorizationCode) async {
+    Map<String, dynamic>? userData = await post(
+        service: 'user',
+        body: {
+          'email': email,
+          'apple_authorization_code': authorizationCode,
+          'login_method': 'apple'
+        },
+        authenticated: false,
+        returnError: true,
+        silentError: true // specific management
+        );
+    if (userData == null) return null;
+    if (userData.containsKey('error')) {
+      return userData;
+    }
+    await _userDataToSharedPreferences(userData);
+    return userData;
+  }
+
   Future<bool> setTermsAndConditions() async {
     Map<String, dynamic>? success = await acceptTermsAndConditions();
     if (success != null) {
