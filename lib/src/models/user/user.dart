@@ -215,7 +215,6 @@ class User extends ChangeNotifier with HttpCaller {
 
   Future<Map<String, dynamic>?> signInWithApple(
       String email, String authorizationCode) async {
-    print("👉 signInWithApple");
     Map<String, dynamic>? userData = await post(
         service: 'user',
         body: {
@@ -227,7 +226,6 @@ class User extends ChangeNotifier with HttpCaller {
         returnError: true,
         silentError: true // specific management
         );
-    print("👉 signInWithApple userData: $userData");
     if (userData == null) return null;
     if (userData.containsKey('error')) {
       return userData;

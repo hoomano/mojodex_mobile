@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mojodex_mobile/src/views/login_view/apple_signin.dart';
@@ -47,9 +48,11 @@ class LoginView extends StatelessWidget {
               onLoginConfirmation: onLoginConfirmation,
               onLoginFailure: onLoginFailure,
             ),
-          AppleSignInButton(
-              onLoginConfirmation: onLoginConfirmation,
-              onLoginFailure: onLoginFailure),
+          if (defaultTargetPlatform == TargetPlatform.iOS &&
+              dotenv.env['APPLE_LOGIN'] == 'true')
+            AppleSignInButton(
+                onLoginConfirmation: onLoginConfirmation,
+                onLoginFailure: onLoginFailure),
         ],
       ),
       safeAreaOverflow: false,
