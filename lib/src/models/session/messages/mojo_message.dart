@@ -1,7 +1,6 @@
 import 'package:mojodex_mobile/src/models/session/messages/message.dart';
 
 class MojoMessage extends Message {
-  int? suggestedTaskPk;
   String? suggestedTaskFirstMessage;
   String? suggestedTaskPlaceholderQuestion;
   String? suggestedTaskPlaceholderInstruction;
@@ -13,7 +12,6 @@ class MojoMessage extends Message {
       super.taskToolExecutionPk = null,
       required int messagePk,
       required String text,
-      this.suggestedTaskPk,
       this.suggestedTaskFirstMessage,
       this.suggestedTaskPlaceholderQuestion,
       this.suggestedTaskPlaceholderInstruction}) {

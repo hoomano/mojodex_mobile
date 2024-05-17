@@ -66,7 +66,7 @@ class Session extends ChangeNotifier with HttpCaller {
 
   Future<bool> _sendMessage(UserMessage message) async {
     try {
-      Map<String, dynamic>? messageData = await _sendUserMessage(message);
+      Map<String, dynamic>? messageData = await sendUserMessage(message);
       if (messageData == null || messageData.containsKey("error")) {
         logger.severe("_sendAudioMessage failed");
         onSendMessageFailed(
@@ -112,6 +112,7 @@ class Session extends ChangeNotifier with HttpCaller {
     if (data is Map && data.containsKey('text')) {
       _mojoTokenController.add(data['text']);
       onGoingMojoMessage = data['text'];
+      _waitingForMojo = true;
     }
   }
 
@@ -128,8 +129,6 @@ class Session extends ChangeNotifier with HttpCaller {
       text: messageMap['text'],
       hasAudio: messageMap['audio'],
       messagePk: messagePk,
-      suggestedTaskPk:
-          messageMap.containsKey('task_pk') ? messageMap['task_pk'] : null,
       suggestedTaskFirstMessage: messageMap.containsKey('task_instruction')
           ? messageMap['task_instruction']
           : null,
@@ -197,9 +196,14 @@ class Session extends ChangeNotifier with HttpCaller {
   /// ]
   Future<Map<String, dynamic>?> _getMessages(
       {offset = 0, maxMessagesByCall = 10, older = true}) async {
-    String params =
-        "datetime=${DateTime.now().toIso8601String()}&session_id=$sessionId&n_messages=$maxMessagesByCall&offset=$offset&offset_direction=${older ? "older" : "newer"}";
+    String params = getMessageParams(
+        offset: offset, maxMessagesByCall: maxMessagesByCall, older: older);
     return await get(service: "message", params: params);
+  }
+
+  @protected
+  String getMessageParams({offset = 0, maxMessagesByCall = 10, older = true}) {
+    return "datetime=${DateTime.now().toIso8601String()}&session_id=$sessionId&n_messages=$maxMessagesByCall&offset=$offset&offset_direction=${older ? "older" : "newer"}";
   }
 
   bool loadingNewerMessages = false;
@@ -290,8 +294,9 @@ class Session extends ChangeNotifier with HttpCaller {
     };
   }
 
-  Future<Map<String, dynamic>?> _sendUserMessage(UserMessage message,
-      {int retry = 3}) async {
+  @protected
+  Future<Map<String, dynamic>?> sendUserMessage(UserMessage message,
+      {int retry = 3, String origin = 'home_chat'}) async {
     try {
       String service = "user_message";
       Map<String, dynamic> formData = {
@@ -299,7 +304,8 @@ class Session extends ChangeNotifier with HttpCaller {
         'message_date': message.creationDate.toIso8601String(),
         // this id is to avoid sending multiple time the same message to whisper, backend will check it is not already treating it.
         'message_id': "${message.creationDate.toIso8601String()}_$sessionId",
-        'message_pk': message.hasMessagePk ? message.messagePk : null
+        'message_pk': message.hasMessagePk ? message.messagePk : null,
+        'origin': origin
       }..addAll(get_placeholders());
       if (!message.hasAudio) {
         // for auto-send message for example
@@ -323,7 +329,8 @@ class Session extends ChangeNotifier with HttpCaller {
                 "_sendUserMessage: received response error: ${error.type} - ${error.message} - ${error.error} - ${error.response} - retrying in 4s");
             await Future.delayed(const Duration(seconds: 4));
             logger.info("_sendUserMessage - retry ${retry - 1}");
-            return await _sendUserMessage(message, retry: retry - 1);
+            return await sendUserMessage(message,
+                retry: retry - 1, origin: origin);
           } else {
             try {
               return error.response?.data as Map<String, dynamic>;
@@ -343,7 +350,8 @@ class Session extends ChangeNotifier with HttpCaller {
           logger.info(
               "🔁 _sendUserMessage: received response 'processing' - retry ${retry - 1}");
           await Future.delayed(const Duration(seconds: 4));
-          return await _sendUserMessage(message, retry: retry - 1);
+          return await sendUserMessage(message,
+              retry: retry - 1, origin: origin);
         }
       }
       return response;

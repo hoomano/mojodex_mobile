@@ -12,11 +12,15 @@ import 'messages/user_message.dart';
 class TaskSession extends Session {
   TaskSession(
       {required super.sessionId,
+      required int userTaskExecutionPk,
       required this.onReceivedNewDraft,
       required this.onReceivedUserTaskExecutionTitle,
       required this.correctProducedText,
-      required this.onUserTaskExecutionStarted});
+      required this.onUserTaskExecutionStarted}) {
+    _userTaskExecutionPk = userTaskExecutionPk;
+  }
 
+  late int _userTaskExecutionPk;
   String? onGoingDraftTitle;
   String? onGoingDraftProduction;
   // Is MojoDrafting ? = sending draft tokens ?
@@ -201,5 +205,18 @@ class TaskSession extends Session {
           messages.length >
               1 // if we already had an exchange, let's respond with a draft
     };
+  }
+
+  @override
+  String getMessageParams({offset = 0, maxMessagesByCall = 10, older = true}) {
+    String params = super.getMessageParams(
+        offset: offset, maxMessagesByCall: maxMessagesByCall, older: older);
+    return "$params&user_task_execution_pk=${_userTaskExecutionPk}";
+  }
+
+  @override
+  Future<Map<String, dynamic>?> sendUserMessage(UserMessage message,
+      {int retry = 3, String origin = 'task'}) async {
+    return super.sendUserMessage(message, retry: retry, origin: origin);
   }
 }
