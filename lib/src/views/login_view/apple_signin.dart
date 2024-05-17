@@ -19,7 +19,6 @@ class AppleSignInButton extends StatelessWidget {
         onLoginConfirmation: onLoginConfirmation,
         onLoginFailure: onLoginFailure,
         providerSignIn: () async {
-          print('Apple Sign In');
           AuthorizationCredentialAppleID credential =
               await SignInWithApple.getAppleIDCredential(
             scopes: [
