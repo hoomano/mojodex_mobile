@@ -17,7 +17,6 @@ import 'package:path_provider/path_provider.dart';
 import '../../microphone.dart';
 import '../../purchase_manager/purchase_manager.dart';
 import '../calendar_manager/calendar_manager.dart';
-import '../home_chat/home_chat.dart';
 import '../status_bar/calendar_suggestion.dart';
 import '../tasks/user_task_executions_history.dart';
 import '../tasks/user_tasks_list.dart';
@@ -102,7 +101,7 @@ class User extends ChangeNotifier with HttpCaller {
       if (!presented) {
         await purchaseManager.getProductCategories();
       } else {
-        await HomeChat().init();
+        //await HomeChat().init();
       }
       _isLoggedIn = true;
       notifyListeners();
@@ -176,13 +175,52 @@ class User extends ChangeNotifier with HttpCaller {
     return userData;
   }
 
-  Future<Map<String, dynamic>?> signIn(String email, String password) async {
+  Future<Map<String, dynamic>?> signInWithEmail(
+      String email, String password) async {
     Map<String, dynamic>? userData = await post(
         service: 'user',
         body: {
           'email': email,
           'password': password,
           'login_method': 'email_password'
+        },
+        authenticated: false,
+        returnError: true,
+        silentError: true // specific management
+        );
+    if (userData == null) return null;
+    if (userData.containsKey('error')) {
+      return userData;
+    }
+    await _userDataToSharedPreferences(userData);
+    return userData;
+  }
+
+  Future<Map<String, dynamic>?> signInWithGoogle(
+      String email, String token) async {
+    Map<String, dynamic>? userData = await post(
+        service: 'user',
+        body: {'email': email, 'google_token': token, 'login_method': 'google'},
+        authenticated: false,
+        returnError: true,
+        silentError: true // specific management
+        );
+    if (userData == null) return null;
+    if (userData.containsKey('error')) {
+      return userData;
+    }
+    await _userDataToSharedPreferences(userData);
+    return userData;
+  }
+
+  Future<Map<String, dynamic>?> signInWithApple(
+      String email, String authorizationCode) async {
+    Map<String, dynamic>? userData = await post(
+        service: 'user',
+        body: {
+          'email': email,
+          'apple_authorization_code': authorizationCode,
+          'login_method': 'apple'
         },
         authenticated: false,
         returnError: true,
@@ -240,9 +278,9 @@ class User extends ChangeNotifier with HttpCaller {
   Future<Map<String, dynamic>?> acceptTermsAndConditions() async {
     Map<String, dynamic>? response =
         await put(service: 'terms_and_conditions', body: {});
-    if (response != null) {
+    /* if (response != null) {
       await HomeChat().init();
-    }
+    }*/
     return response;
   }
 
