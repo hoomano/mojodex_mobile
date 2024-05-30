@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
+import 'package:mojodex_mobile/firebase_options.dart';
 import 'package:mojodex_mobile/mojodex_app.dart';
-import 'package:mojodex_mobile/src/firebase_options.dart';
 import 'package:mojodex_mobile/src/models/user/user.dart';
 import 'package:mojodex_mobile/src/views/error_view/no_connection_error_view.dart';
 
