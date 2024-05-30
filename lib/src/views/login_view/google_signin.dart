@@ -30,7 +30,7 @@ class GoogleSignInButton extends StatelessWidget {
           );
           GoogleSignInAccount? account = await googleSignIn.signIn();
           GoogleSignInAuthentication? auth = await account?.authentication;
-          if (auth != null && auth.idToken != null) return null;
+          if (auth == null || auth.idToken == null) return null;
           return await User().signInWithGoogle(account!.email, auth!.idToken!);
         },
         logoName: 'google_logo.png',
