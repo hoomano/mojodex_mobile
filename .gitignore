@@ -51,6 +51,9 @@ ios/firebase_app_id_file.json
 
 # Build files
 android/local.properties
+android/app/build.gradle
+android/app/src/main/kotlin/com/example/mojodex/mojodexmobile/MainActivity.kt
+android/build.gradle
 android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
 assets/.env
 ios/Flutter/flutter_export_environment.sh
@@ -60,3 +63,4 @@ ios/Runner/GeneratedPluginRegistrant.h
 ios/Runner/GeneratedPluginRegistrant.m
 ios/Runner.xcodeproj/*
 ios/Runner.xcodeproj/project.pbxproj
+ios/Runner/Info.plist
