@@ -39,21 +39,23 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MojodexScaffold(
       appBarTitle: '',
-      body: Column(
-        children: [
-          emailPasswordWidget,
-          const OtherProvidersDivider(),
-          if (dotenv.env.containsKey("GOOGLE_SERVER_CLIENT_ID"))
-            GoogleSignInButton(
-              onLoginConfirmation: onLoginConfirmation,
-              onLoginFailure: onLoginFailure,
-            ),
-          if (defaultTargetPlatform == TargetPlatform.iOS &&
-              dotenv.env['APPLE_LOGIN'] == 'true')
-            AppleSignInButton(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            emailPasswordWidget,
+            const OtherProvidersDivider(),
+            if (dotenv.env.containsKey("GOOGLE_SERVER_CLIENT_ID"))
+              GoogleSignInButton(
                 onLoginConfirmation: onLoginConfirmation,
-                onLoginFailure: onLoginFailure),
-        ],
+                onLoginFailure: onLoginFailure,
+              ),
+            if (defaultTargetPlatform == TargetPlatform.iOS &&
+                dotenv.env['APPLE_LOGIN'] == 'true')
+              AppleSignInButton(
+                  onLoginConfirmation: onLoginConfirmation,
+                  onLoginFailure: onLoginFailure),
+          ],
+        ),
       ),
       safeAreaOverflow: false,
     );
