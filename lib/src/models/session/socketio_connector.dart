@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
+import 'package:mojodex_mobile/src/models/session/home_chat_session.dart';
 import 'package:mojodex_mobile/src/models/session/session.dart';
 import 'package:mojodex_mobile/src/models/session/task_session.dart';
 import 'package:mojodex_mobile/src/models/status_bar/calendar_suggestion.dart';
@@ -39,6 +40,8 @@ class SocketioConnector {
   static const String _userMessageReceptionEventKey = 'user_message_reception';
   static const String _userTaskExecutionTitleEventKey =
       'user_task_execution_title';
+  static const String _welcomeMessageTokenEventKey = 'welcome_message_token';
+  static const String _welcomeMessageEventKey = 'welcome_message';
   static const String _draftTokenEventKey = "draft_token";
   static const String _draftMessageEventKey = "draft_message";
   static const String _mojoTokenEventKey = "mojo_token";
@@ -145,6 +148,42 @@ class SocketioConnector {
     }
   }
 
+  /// on welcome_message_token callback
+  void _welcomeMessageToken(data) {
+    try {
+      print("🟢 _welcomeMessageToken: ${data["header"]}");
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        try {
+          HomeChatSession session = s as HomeChatSession;
+          session.onWelcomeMessageToken(data);
+        } catch (e) {
+          // Do nothing
+        }
+      }
+    } catch (e) {
+      logger.shout("Error in _welcomeMessageToken title callback: $e");
+    }
+  }
+
+  /// on welcome_message callback
+  void _welcomeMessage(data) {
+    try {
+      print("🔴 _welcomeMessage");
+      List<Session> sessions = _getSessionFromId(data['session_id']);
+      for (Session s in sessions) {
+        try {
+          HomeChatSession session = s as HomeChatSession;
+          session.onWelcomeMessage(data);
+        } catch (e) {
+          // Do nothing
+        }
+      }
+    } catch (e) {
+      logger.shout("Error in _welcomeMessage title callback: $e");
+    }
+  }
+
   /// on draft token callback
   void _draftTokenCallback(data) {
     try {
@@ -187,7 +226,6 @@ class SocketioConnector {
   void _mojoTokenCallback(data) {
     try {
       List<Session> sessions = _getSessionFromId(data['session_id']);
-      print("Streaming in ${sessions.length} sessions.");
       for (Session s in sessions) {
         s.onMojoToken(data);
       }
@@ -261,6 +299,8 @@ class SocketioConnector {
     _socket.on(_errorEventKey, _errorCallback);
     _socket.on(_userMessageReceptionEventKey, _userMessageAcked);
     _socket.on(_userTaskExecutionTitleEventKey, _userTaskExecutionTitle);
+    _socket.on(_welcomeMessageTokenEventKey, _welcomeMessageToken);
+    _socket.on(_welcomeMessageEventKey, _welcomeMessage);
     _socket.on(_draftTokenEventKey, _draftTokenCallback);
     _socket.on(_draftMessageEventKey, _draftMessageCallback);
     _socket.on(_mojoTokenEventKey, _mojoTokenCallback);

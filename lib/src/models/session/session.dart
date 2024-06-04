@@ -35,6 +35,12 @@ class Session extends ChangeNotifier with HttpCaller {
   final List<Message> _messages = [];
   List<Message> get messages => _messages;
 
+  @protected
+  void addMojoMessageToLocalList(MojoMessage message) {
+    _messages.insert(0, message);
+    notifyListeners();
+  }
+
   void markMessageAsResubmitted(UserMessage message) {
     message.retry();
     _waitingForMojo = true;
@@ -112,6 +118,7 @@ class Session extends ChangeNotifier with HttpCaller {
     if (data is Map && data.containsKey('text')) {
       _mojoTokenController.add(data['text']);
       onGoingMojoMessage = data['text'];
+      print(onGoingMojoMessage);
       _waitingForMojo = true;
     }
   }

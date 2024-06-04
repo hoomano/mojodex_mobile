@@ -29,8 +29,7 @@ class AppRouter {
 
   factory AppRouter() => _instance;
 
-  String initialLocation = '/${UserTaskExecutionsListView.routeName}';
-  // "/${HomeScreen.routeName}";
+  String initialLocation = "/${HomeScreen.routeName}";
 
   late GoRouter _goRouter;
   GoRouter get goRouter => _goRouter;

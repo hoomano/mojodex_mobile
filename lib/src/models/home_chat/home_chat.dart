@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/models/http_caller.dart';
 import 'package:mojodex_mobile/src/models/session/messages/mojo_message.dart';
 
+import '../session/home_chat_session.dart';
 import '../session/messages/audio_manager.dart';
-import '../session/session.dart';
 
 class HomeChat with HttpCaller {
   final Logger logger = Logger('HomeChat');
@@ -17,7 +19,7 @@ class HomeChat with HttpCaller {
 
   factory HomeChat() => _instance;
 
-  late Session session;
+  late HomeChatSession session;
 
   late int pk;
 
@@ -47,20 +49,25 @@ class HomeChat with HttpCaller {
       }
       pk = homeChatData['home_chat_pk'];
       String sessionId = homeChatData['session_id'];
-      initialMessageHeader = homeChatData['message'].containsKey("header")
-          ? homeChatData['message']['header']
-          : "";
-      initialMessageBody = homeChatData['message'].containsKey("body")
-          ? homeChatData['message']['body']
-          : homeChatData['message']['text'];
-      session = Session(sessionId: sessionId);
+
+      session = HomeChatSession(sessionId: sessionId);
       session.connectToSession();
-      MojoMessage message = MojoMessage(
-          hasAudio: false,
-          messagePk: homeChatData['message_pk'],
-          text: homeChatData['message']['text']);
-      message.audioManager = AudioManager(getAudioFile: message.getVoice);
-      session.messages.add(message);
+
+      if (homeChatData['message'] != null) {
+        initialMessageHeader = homeChatData['message'].containsKey("header")
+            ? homeChatData['message']['header']
+            : "";
+        initialMessageBody = homeChatData['message'].containsKey("body")
+            ? homeChatData['message']['body']
+            : homeChatData['message']['text'];
+        MojoMessage message = MojoMessage(
+            hasAudio: false,
+            messagePk: homeChatData['message_pk'],
+            text: homeChatData['message']['text']);
+        message.audioManager = AudioManager(getAudioFile: message.getVoice);
+        session.messages.add(message);
+      }
+
       _initialized = true;
     } catch (e) {
       logger.severe('Error initializing HomeChat: $e');
