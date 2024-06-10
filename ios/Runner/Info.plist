@@ -8,10 +8,6 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Mojodex</string>
-	<key>NSCalendarsFullAccessUsageDescription</key>
-    <string>Mojodex needs access to your calendar to suggest actions</string>
-    <key>NSCalendarsUsageDescription</key>
-    <string>Mojodex needs access to your calendar to suggest actions</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

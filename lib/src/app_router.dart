@@ -1,13 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
-import 'package:mojodex_mobile/src/views/home_screen/home_screen.dart';
 import 'package:mojodex_mobile/src/views/login_view/signin.dart';
 import 'package:mojodex_mobile/src/views/login_view/signup.dart';
 import 'package:mojodex_mobile/src/views/new_user_task_execution/new_user_task_execution.dart';
 import 'package:mojodex_mobile/src/views/onboarding/onboarding_page_controller.dart';
 import 'package:mojodex_mobile/src/views/reset_password/reset_password_view.dart';
 import 'package:mojodex_mobile/src/views/settings_view/account_deletion_view/account_deletion.dart';
-import 'package:mojodex_mobile/src/views/settings_view/calendar_settings_view/calendarSettingsView.dart';
 import 'package:mojodex_mobile/src/views/settings_view/plan_view/plan_view.dart';
 import 'package:mojodex_mobile/src/views/settings_view/settings_view.dart';
 import 'package:mojodex_mobile/src/views/todos_view/todos_view.dart';
@@ -39,12 +37,12 @@ class AppRouter {
     _goRouter = GoRouter(
       initialLocation: initialLocation,
       routes: [
-        GoRoute(
+        /*GoRoute(
             path: "/${HomeScreen.routeName}",
             name: HomeScreen.routeName,
             builder: (context, state) {
               return HomeScreen();
-            }),
+            }),*/
         GoRoute(
           path: '/${UserTaskExecutionsListView.routeName}',
           name: UserTaskExecutionsListView.routeName,
@@ -91,9 +89,6 @@ class AppRouter {
                   String? setting = state.pathParameters['setting'];
                   if (setting == PlanView.routeName) {
                     return PlanView();
-                  }
-                  if (setting == CalendarSettingsView.routeName) {
-                    return CalendarSettingsView();
                   }
                   if (setting == AccountDeletionView.routeName) {
                     return AccountDeletionView();

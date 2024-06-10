@@ -4,7 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logging/logging.dart';
 import 'package:mojodex_mobile/src/models/session/session.dart';
 import 'package:mojodex_mobile/src/models/session/task_session.dart';
-import 'package:mojodex_mobile/src/models/status_bar/calendar_suggestion.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import '../user/user.dart';
@@ -208,10 +207,6 @@ class SocketioConnector {
     }
   }
 
-  void _calendarSuggestionCallback(data) {
-    CalendarSuggestion().retrieveSuggestion(data);
-  }
-
   void _userTaskExecutionStartCallback(data) async {
     try {
       List<Session> sessions = _getSessionFromId(data['session_id']);
@@ -265,7 +260,6 @@ class SocketioConnector {
     _socket.on(_draftMessageEventKey, _draftMessageCallback);
     _socket.on(_mojoTokenEventKey, _mojoTokenCallback);
     _socket.on(_mojoMessageEventKey, _mojoMessageCallback);
-    _socket.on(_calendarSuggestionEventKey, _calendarSuggestionCallback);
     _socket.on(
         _userTaskExecutionStartEventKey, _userTaskExecutionStartCallback);
   }

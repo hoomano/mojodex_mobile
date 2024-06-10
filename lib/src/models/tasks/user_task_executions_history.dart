@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:logging/logging.dart';
-import 'package:mojodex_mobile/src/models/status_bar/calendar_suggestion.dart';
 import 'package:mojodex_mobile/src/models/tasks/user_task_execution.dart';
 import 'package:mojodex_mobile/src/models/user/user.dart';
 
@@ -65,10 +64,6 @@ class UserTaskExecutionsHistory extends CachedList<UserTaskExecution> {
       items.addAll(userTaskExecutions);
       if (items.isNotEmpty && !User().hasAlreadyDoneTask) {
         User().hasAlreadyDoneTask = true;
-        if (CalendarSuggestion().status.value ==
-            calendarSuggestionStatus.noCalendarAccess) {
-          CalendarSuggestion().init();
-        }
       }
     }
     if (offset == 0 && !userTaskExecutionsAreFiltered) {
