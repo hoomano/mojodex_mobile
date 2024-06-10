@@ -16,8 +16,6 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../microphone.dart';
 import '../../purchase_manager/purchase_manager.dart';
-import '../calendar_manager/calendar_manager.dart';
-import '../status_bar/calendar_suggestion.dart';
 import '../tasks/user_task_executions_history.dart';
 import '../tasks/user_tasks_list.dart';
 import '../todos/todo-list.dart';
@@ -79,9 +77,6 @@ class User extends ChangeNotifier with HttpCaller {
         Microphone().init(),
       ];
       await Future.wait(futures);
-      if (User().hasAlreadyDoneTask) {
-        CalendarSuggestion().init();
-      }
 
       purchaseManager.init().then((value) {
         //purchaseManager.init() also runs userTasksList.loadMoreItems(offset: 0)
@@ -138,7 +133,6 @@ class User extends ChangeNotifier with HttpCaller {
     _userTasksList.empty();
     _userTaskExecutionsHistory.empty();
     _todoList.empty();
-    CalendarManager().resetPermission();
     _isLoggedIn = false;
 
     notifyListeners();
@@ -333,18 +327,9 @@ class User extends ChangeNotifier with HttpCaller {
   String? get language => _sharedPreferences.language;
   set language(String? language) => _sharedPreferences.language = language;
   String? get tokenBackendPython => _sharedPreferences.tokenBackendPython;
-  List<String>? get authorizedCalendarIds =>
-      _sharedPreferences.authorizedCalendarsId;
-  set authorizedCalendarIds(List<String>? authorizedCalendarIds) =>
-      _sharedPreferences.authorizedCalendarsId = authorizedCalendarIds;
   bool get vocalMessageAutoPlay => _sharedPreferences.vocalMessageAutoPlay;
   set vocalMessageAutoPlay(bool vocalMessageAutoPlay) =>
       _sharedPreferences.vocalMessageAutoPlay = vocalMessageAutoPlay;
-  bool get askedForCalendarAccessOnce =>
-      _sharedPreferences.askedForCalendarAccessOnce;
-  set askedForCalendarAccessOnce(bool askedForCalendarAccessOnce) =>
-      _sharedPreferences.askedForCalendarAccessOnce =
-          askedForCalendarAccessOnce;
   bool get hasAlreadyDoneTask => _sharedPreferences.hasAlreadyDoneTask;
   set hasAlreadyDoneTask(bool hasAlreadyDoneTask) =>
       _sharedPreferences.hasAlreadyDoneTask = hasAlreadyDoneTask;

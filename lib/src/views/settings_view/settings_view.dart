@@ -15,7 +15,6 @@ import '../../models/language/system_language.dart';
 import '../../models/user/user.dart';
 import '../drawer/app_drawer.dart';
 import '../widgets/profile_picture.dart';
-import 'calendar_settings_view/calendarSettingsView.dart';
 
 class SettingsView extends StatefulWidget {
   static String routeName = "settings";
@@ -126,11 +125,6 @@ class _SettingsViewState extends State<SettingsView> {
                                 key: "account.deleteAccountButton"),
                             onTap: (context) => context.go(
                                 '/${SettingsView.routeName}/${AccountDeletionView.routeName}')),
-                        Item(
-                            text: labelsProvider.getText(
-                                key: "account.calendarButton"),
-                            onTap: (context) => context.go(
-                                '/${SettingsView.routeName}/${CalendarSettingsView.routeName}'))
                       ],
                     ),
                     AccountSection(

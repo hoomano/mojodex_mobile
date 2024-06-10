@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,9 +33,7 @@ class UserSharedPreferences {
   final String _keyNotifAllowed = "notifAllowed";
   final String _keyFcmToken = "fcmToken";
   final String _keyLanguage = "language";
-  final String _keyAuthorizedCalendars = "calendars";
   final String _keyVocalMessageAutoPlay = "vocalMessageAutoPlay";
-  final String _keyAskedForCalendarAccessOnce = "askedForCalendarAccessOnce";
   final String _keyHasAlreadyDoneTask = "hasAlreadyDoneTask";
   final String _keyOnboardingPresented = "onboardingPresented";
 
@@ -157,24 +153,6 @@ class UserSharedPreferences {
     return _preferences.getString(_keyLanguage);
   }
 
-  /// authorized calendars [allCalendars] setter
-  /// to store the value in the shared preferences
-  set authorizedCalendarsId(List<String>? calendarsId) {
-    logger.finest("set authorizedCalendars: $calendarsId");
-    _setSharedPreferenceString(
-        _keyAuthorizedCalendars, json.encode(calendarsId));
-  }
-
-  /// authorized calendars [allCalendars] getter
-  /// to get the value from the shared preferences
-  List<String>? get authorizedCalendarsId {
-    final String? calendars = _preferences.getString(_keyAuthorizedCalendars);
-    if (calendars == null) {
-      return null;
-    }
-    return json.decode(calendars).cast<String>();
-  }
-
   /// [vocalMessageAutoPlay] setter
   /// to store the value in the shared preferences
   set vocalMessageAutoPlay(bool autoPlay) {
@@ -186,19 +164,6 @@ class UserSharedPreferences {
   /// to get the value from the shared preferences
   bool get vocalMessageAutoPlay {
     return _preferences.getBool(_keyVocalMessageAutoPlay) ?? true;
-  }
-
-  /// [askedForCalendarAccessOnce] setter
-  /// to store the value in the shared preferences
-  set askedForCalendarAccessOnce(bool asked) {
-    logger.finest("set askedForCalendarAccessOnce: $asked");
-    _setSharedPreferenceBool(_keyAskedForCalendarAccessOnce, asked);
-  }
-
-  /// [askedForCalendarAccessOnce] getter
-  /// to get the value from the shared preferences
-  bool get askedForCalendarAccessOnce {
-    return _preferences.getBool(_keyAskedForCalendarAccessOnce) ?? false;
   }
 
   /// [hasAlreadyDoneTask] setter

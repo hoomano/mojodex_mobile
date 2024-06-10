@@ -1,7 +1,6 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:flutter/material.dart';
 import 'package:mojodex_mobile/src/models/language/system_language.dart';
-import 'package:mojodex_mobile/src/views/widgets/status_bar/animated_card.dart';
 import 'package:provider/provider.dart';
 
 import '../../../DS/design_system.dart' as ds;
@@ -129,18 +128,7 @@ class _MojodexScaffoldState extends State<MojodexScaffold> {
               body: ColorfulSafeArea(
                   overflowRules: OverflowRules.all(widget.safeAreaOverflow),
                   color: Colors.transparent,
-                  child: Column(
-                    children: [
-                      AnimatedStatusBar(
-                          onTaskCardSelected: () {
-                            setState(() {
-                              _freezeScreen = !_freezeScreen;
-                            });
-                          },
-                          name: widget.appBarTitle),
-                      Expanded(child: widget.body),
-                    ],
-                  )),
+                  child: widget.body),
               drawer: widget.drawer,
               bottomNavigationBar: widget.bottomBarWidget,
             ),
