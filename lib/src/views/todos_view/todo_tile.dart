@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mojodex_mobile/src/views/skeletons/skeleton_list.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_list/user_task_execution_list.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/user_task_execution_view.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,6 @@ import '../../app_router.dart';
 import '../../models/tasks/user_task_execution.dart';
 import '../../models/todos/todos.dart';
 import '../../models/user/user.dart';
-import '../skeletons/skeleton_item.dart';
 
 typedef UndoAction = Future<void> Function();
 
@@ -106,7 +106,9 @@ class _TodoTileState extends State<TodoTile> {
                 child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16.0)),
-                    child: SkeletonCard()),
+                    child: SkeletonList(
+                      itemCount: 1,
+                    )),
               )
             : GestureDetector(
                 onTap: () async {

@@ -885,14 +885,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
-  skeletons:
+  skeletonizer:
     dependency: "direct main"
     description:
-      name: skeletons
-      sha256: "5b2d08ae7f908ee1f7007ca99f8dcebb4bfc1d3cb2143dec8d112a5be5a45c8f"
+      name: skeletonizer
+      sha256: d94ae24d9fcedc5fd2984ccbe5af5e9d76e2bf6a35ee775fe8c737c90297908e
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3"
+    version: "1.3.0"
   sky_engine:
     dependency: transitive
     description: flutter
