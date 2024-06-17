@@ -71,5 +71,17 @@
 	<true/>
 	<key>FlutterDeepLinkingEnabled</key>
     <true/>
+	<!-- Google Sign-in Section -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.742248116805-cah7fun4kd37mr9vhu3kv36eg6ct27n9</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
