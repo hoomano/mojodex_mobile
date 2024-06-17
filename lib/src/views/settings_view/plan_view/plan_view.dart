@@ -6,7 +6,6 @@ import 'package:mojodex_mobile/src/views/settings_view/plan_view/purchase_activa
 import 'package:mojodex_mobile/src/views/settings_view/plan_view/purchase_usage.dart';
 import 'package:mojodex_mobile/src/views/widgets/common_scaffold.dart';
 import 'package:provider/provider.dart';
-import 'package:skeletons/skeletons.dart';
 
 import '../../../../DS/design_system.dart' as ds;
 import '../../../../DS/theme/themes.dart';
@@ -25,10 +24,6 @@ class PlanView extends StatelessWidget {
         safeAreaOverflow: false,
         body: Consumer<PurchaseManager>(
             builder: (context, purchaseManager, child) {
-          if (purchaseManager.currentPurchases == null) {
-            return const PlanBannerSkeleton();
-          }
-
           List<Widget> currentPurchases = purchaseManager.currentPurchases!
               .map((purchase) => ProductCard(
                     product: purchase.product,
@@ -111,67 +106,5 @@ class PlanView extends StatelessWidget {
                 )),
           );
         }));
-  }
-}
-
-class PlanBannerSkeleton extends StatelessWidget {
-  const PlanBannerSkeleton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    return SkeletonTheme(
-      // themeMode: ThemeMode.light,
-      shimmerGradient: LinearGradient(
-        colors: [
-          themeProvider.themeMode == ThemeMode.dark
-              ? ds.DesignColor.grey.grey_5
-              : Colors.grey,
-          themeProvider.themeMode == ThemeMode.dark
-              ? ds.DesignColor.grey.grey_7
-              : ds.DesignColor.grey.grey_1,
-          themeProvider.themeMode == ThemeMode.dark
-              ? ds.DesignColor.grey.grey_5
-              : Colors.grey,
-        ],
-        stops: const [
-          0.4,
-          0.9,
-          0.4,
-        ],
-      ),
-      darkShimmerGradient: LinearGradient(
-        colors: [
-          ds.DesignColor.grey.grey_3,
-          ds.DesignColor.grey.grey_5,
-          ds.DesignColor.grey.grey_3,
-        ],
-        stops: const [
-          0.0,
-          0.2,
-          1,
-        ],
-        begin: const Alignment(-2.4, -0.2),
-        end: const Alignment(2.4, 0.2),
-        tileMode: TileMode.clamp,
-      ),
-      child: Align(
-        alignment: Alignment.center,
-        child: SkeletonItem(
-          child: SkeletonParagraph(
-            style: SkeletonParagraphStyle(
-                lines: 1,
-                spacing: 6,
-                lineStyle: SkeletonLineStyle(
-                  randomLength: false,
-                  height: 40,
-                  borderRadius: BorderRadius.circular(8),
-                  minLength: MediaQuery.of(context).size.width - 1,
-                  maxLength: MediaQuery.of(context).size.width,
-                )),
-          ),
-        ),
-      ),
-    );
   }
 }

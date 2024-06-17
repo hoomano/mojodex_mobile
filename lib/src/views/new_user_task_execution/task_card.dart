@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mojodex_mobile/src/views/settings_view/plan_view/plan_view.dart';
 import 'package:mojodex_mobile/src/views/settings_view/settings_view.dart';
-import 'package:mojodex_mobile/src/views/skeletons/skeleton_item.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_list/user_task_execution_list.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +12,7 @@ import '../../models/session/messages/user_message.dart';
 import '../../models/tasks/user_task.dart';
 import '../../models/tasks/user_task_execution.dart';
 import '../../models/user/user.dart';
+import '../skeletons/skeleton_list.dart';
 import '../user_task_execution_view/user_task_execution_view.dart';
 
 class TaskCard extends StatefulWidget {
@@ -61,16 +61,18 @@ class _TaskCardState extends State<TaskCard> {
         padding: const EdgeInsets.symmetric(
             vertical: ds.Spacing.smallPadding,
             horizontal: ds.Spacing.mediumPadding),
-        child: Material(
-          elevation: 3,
-          color: themeProvider.themeMode == ThemeMode.dark
-              ? ds.DesignColor.grey.grey_7
-              : ds.DesignColor.grey.grey_1,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-          child: processing
-              ? SkeletonCard()
-              : ListTile(
+        child: processing
+            ? SkeletonList(
+                itemCount: 1,
+              )
+            : Material(
+                elevation: 3,
+                color: themeProvider.themeMode == ThemeMode.dark
+                    ? ds.DesignColor.grey.grey_7
+                    : ds.DesignColor.grey.grey_1,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0)),
+                child: ListTile(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0)),
                   onTap: () async {
@@ -162,7 +164,7 @@ class _TaskCardState extends State<TaskCard> {
                             fontSize: ds.TextFontSize.h6)),
                   ),
                 ),
-        ),
+              ),
       ),
     );
   }
