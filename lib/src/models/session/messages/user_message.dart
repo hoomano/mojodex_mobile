@@ -4,16 +4,12 @@ class UserMessage extends Message {
   /// Message's creation date
   DateTime creationDate = DateTime.now();
 
-  /// If the message is an approval to task_tool_execution, related task_tool_execution_pk
-  int? taskToolExecutionPk;
-
   /// If the message is a request for text_edit_action, related text_edit_action_pk
   int? textEditActionPk;
 
   UserMessage(
       {super.hasAudio = false,
       super.sender = MessageSender.user,
-      this.taskToolExecutionPk,
       this.textEditActionPk,
       String? text}) {
     isCurrentProcessingUserMessage = true;

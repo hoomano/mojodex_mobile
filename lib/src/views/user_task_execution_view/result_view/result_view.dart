@@ -5,7 +5,6 @@ import 'package:mojodex_mobile/src/share_service.dart';
 import 'package:mojodex_mobile/src/views/new_user_task_execution/task_card.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/chat_view/voice_message_audio_wave_form.dart';
 import 'package:mojodex_mobile/src/views/user_task_execution_view/result_view/hubspot_form/hubspot_export_form.dart';
-import 'package:mojodex_mobile/src/views/user_task_execution_view/result_view/task_tool_results.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../DS/design_system.dart' as ds;
@@ -179,47 +178,6 @@ class _ResultViewState extends State<ResultView> {
             backgroundColor: Colors.transparent);
       }),
     );
-
-    List<TaskToolExecutionWidget> taskToolExecutionWidgets() {
-      Map<String, int> indexTaskExecutionOfThisType = {};
-      return widget.userTaskExecution.taskToolExecutions
-          .map((taskToolExecution) {
-        int totalTaskExecutionOfThisType = widget.userTaskExecution
-                .nTaskToolExecutionTypes[taskToolExecution.tool.label] ??
-            0;
-        if (indexTaskExecutionOfThisType[taskToolExecution.tool.label] ==
-            null) {
-          indexTaskExecutionOfThisType[taskToolExecution.tool.label] = 0;
-        } else {
-          indexTaskExecutionOfThisType[taskToolExecution.tool.label] =
-              indexTaskExecutionOfThisType[taskToolExecution.tool.label]! + 1;
-        }
-
-        return TaskToolExecutionWidget(
-            taskToolExecution: taskToolExecution,
-            index: indexTaskExecutionOfThisType[taskToolExecution.tool.label]!,
-            total: totalTaskExecutionOfThisType);
-      }).toList();
-    }
-
-    // Task Tool Results UI
-    final taskToolResultsUI =
-        widget.userTaskExecution.taskToolExecutions.isEmpty
-            ? Container()
-            : Padding(
-                padding: const EdgeInsets.all(ds.Spacing.mediumPadding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Sources",
-                        style: TextStyle(
-                            color: ds.DesignColor.grey.grey_3,
-                            fontSize: ds.TextFontSize.h6,
-                            fontWeight: FontWeight.bold)),
-                    ds.Space.verticalMedium
-                  ]..addAll(taskToolExecutionWidgets()),
-                ),
-              );
 
     // Buttons UI
     final buttonsUI = Padding(
@@ -439,7 +397,6 @@ class _ResultViewState extends State<ResultView> {
                                               textToCorrect;
                                           setState(() {});
                                         })),
-                            taskToolResultsUI,
                             buttonsUI,
                             textEditActionButtonsUI
                           ],

@@ -9,7 +9,6 @@ class MojoMessage extends Message {
       {super.sender = MessageSender.agent,
       required super.hasAudio,
       super.autoPlay = true,
-      super.taskToolExecutionPk = null,
       required int messagePk,
       required String text,
       this.suggestedTaskFirstMessage,

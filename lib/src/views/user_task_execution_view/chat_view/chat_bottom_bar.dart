@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mojodex_mobile/src/views/user_task_execution_view/chat_view/validation_widget.dart';
 import 'package:mojodex_mobile/src/views/widgets/spelling_corrector.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +8,6 @@ import '../../../../DS/theme/themes.dart';
 import '../../../models/language/system_language.dart';
 import '../../../models/session/messages/user_message.dart';
 import '../../../models/session/session.dart';
-import '../../../models/session/task_session.dart';
 import '../../../models/user/user.dart';
 import '../../../notifications_manager.dart';
 import '../../widgets/text_area_mic.dart';
@@ -53,11 +51,7 @@ class ChatBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    bool isLastMessageATaskToolExecutionProposition =
-        session.messages.isNotEmpty &&
-            session.messages[0].taskToolExecutionPk != null &&
-            session.messages[0].taskToolExecutionAcceptedByUser == null &&
-            !session.waitingForMojo;
+
     if (session.loadingNewerMessages) {
       return Padding(
         padding: const EdgeInsets.all(ds.Spacing.smallPadding),
@@ -74,12 +68,6 @@ class ChatBottomBar extends StatelessWidget {
           text: session.textPortionInCorrection!,
           onFinishSpellingCorrection: session.onFinishSpellingCorrection,
           onDismissed: session.abandonSpellingCorrection);
-    } else if (isLastMessageATaskToolExecutionProposition) {
-      return ValidationWidget(
-        session: session
-            as TaskSession, // can't arrive here if session is not a TaskSession
-        onValidate: () => onValidate(context),
-      );
     } else {
       return TextAreaMic(
         onSubmit: ({String? userText, String? audioFilePath}) {

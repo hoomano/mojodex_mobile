@@ -6,10 +6,6 @@ import 'package:mojodex_mobile/src/models/session/messages/user_message.dart';
 import 'package:mojodex_mobile/src/models/session/task_session.dart';
 import 'package:mojodex_mobile/src/models/tasks/edit_text_actions.dart';
 import 'package:mojodex_mobile/src/models/tasks/produced_text.dart';
-import 'package:mojodex_mobile/src/models/tasks/tool/google_search_tool.dart';
-import 'package:mojodex_mobile/src/models/tasks/tool/internal_memory_tool.dart';
-import 'package:mojodex_mobile/src/models/tasks/tool/task_tool_execution.dart';
-import 'package:mojodex_mobile/src/models/tasks/tool/tool.dart';
 import 'package:mojodex_mobile/src/models/todos/todos.dart';
 import 'package:mojodex_mobile/src/models/user/user.dart';
 
@@ -17,8 +13,6 @@ import '../actions/predefined_actions.dart';
 
 class UserTaskExecution extends SerializableDataItem
     with HttpCaller, ChangeNotifier {
-  static List<Tool> availableTools = [GoogleSearchTool(), InternalMemoryTool()];
-
   // Logger
   final Logger logger = Logger('UserTaskExecution');
 
@@ -64,13 +58,6 @@ class UserTaskExecution extends SerializableDataItem
   /// the text edit actions associated to the produced text
   List<TextEditAction> _textEditActions = [];
   List<TextEditAction> get textEditActions => _textEditActions;
-
-  List<TaskToolExecution> _taskToolExecutions = [];
-  List<TaskToolExecution> get taskToolExecutions => _taskToolExecutions;
-
-  // number of task tool executions of each type
-  Map<String, dynamic> _nTaskToolExecutionTypes = {};
-  Map<String, dynamic> get nTaskToolExecutionTypes => _nTaskToolExecutionTypes;
 
   void correctProducedText(String initialText, String correctedText) {
     if (producedText == null || producedText!.production == null) return;
@@ -132,25 +119,6 @@ class UserTaskExecution extends SerializableDataItem
     if (_deletedByUser) {
       User().userTaskExecutionsHistory.deleteItem(this);
     }
-
-    _taskToolExecutions = [];
-    for (Map<String, dynamic> task_tool_execution_data
-        in data['task_tool_executions']) {
-      // if task_tool_execution_data['tool_name'] in availableTools
-      if (availableTools
-          .map((e) => e.label)
-          .contains(task_tool_execution_data['tool_name'])) {
-        _taskToolExecutions
-            .add(TaskToolExecution.fromJson(task_tool_execution_data));
-        if (_nTaskToolExecutionTypes
-            .containsKey(task_tool_execution_data['tool_name'])) {
-          _nTaskToolExecutionTypes[task_tool_execution_data['tool_name']] += 1;
-        } else {
-          _nTaskToolExecutionTypes[task_tool_execution_data['tool_name']] = 1;
-        }
-      }
-      // else drop it, tool is not yet available in front
-    }
   }
 
   // used if the userTaskExecution is retrieved from backend
@@ -199,10 +167,7 @@ class UserTaskExecution extends SerializableDataItem
       'text_edit_actions': _textEditActions
           .map((textEditAction) => textEditAction.toJson())
           .toList(),
-      'working_on_todos': workingOnTodos,
-      'task_tool_executions': _taskToolExecutions
-          .map((taskToolExecution) => taskToolExecution.toJson())
-          .toList(),
+      'working_on_todos': workingOnTodos
     };
   }
 
@@ -211,7 +176,6 @@ class UserTaskExecution extends SerializableDataItem
   /// Refresh the user task execution data that could have evolved while user was not on its view:
   /// - produced text (a new one can have been created)
   /// - todos (new ones can have been created)
-  /// - task tool executions (new ones can have been created)
   /// - working_on_todos (can have been changed)
   /// - title and summary (can have been changed)
   Future<void> refresh() async {
