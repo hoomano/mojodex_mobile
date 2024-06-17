@@ -216,7 +216,10 @@ class TaskSession extends Session {
 
   @override
   Future<Map<String, dynamic>?> sendUserMessage(UserMessage message,
-      {int retry = 3, String origin = 'task'}) async {
-    return super.sendUserMessage(message, retry: retry, origin: origin);
+      {int retry = 3, String origin = 'task', int? userTaskExecutionPk}) async {
+    return super.sendUserMessage(message,
+        retry: retry,
+        origin: origin,
+        userTaskExecutionPk: _userTaskExecutionPk);
   }
 }
