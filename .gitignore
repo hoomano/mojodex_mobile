@@ -26,6 +26,8 @@ Flutter/flutter_export_environment.sh
 ServiceDefinitions.json
 Runner/GeneratedPluginRegistrant.*
 ios/Podfile.lock
+pubspec.lock
+
 
 # Miscellaneous
 .DS_Store
@@ -63,4 +65,4 @@ ios/Runner/GeneratedPluginRegistrant.h
 ios/Runner/GeneratedPluginRegistrant.m
 ios/Runner.xcodeproj/*
 ios/Runner.xcodeproj/project.pbxproj
-ios/Runner/Info.plist
+ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme

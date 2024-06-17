@@ -32,9 +32,6 @@ class TaskSession extends Session {
       Map<String, dynamic> messageMap, int messagePk) {
     return MojoMessage(
         text: messageMap['text'],
-        taskToolExecutionPk: messageMap.containsKey('task_tool_execution_fk')
-            ? messageMap['task_tool_execution_fk']
-            : null,
         hasAudio: messageMap['audio'],
         messagePk: messagePk);
   }
@@ -71,43 +68,9 @@ class TaskSession extends Session {
         ErrorNotifier().errorController.add(errorMessage);
         return;
       }
-      if (message.taskToolExecutionPk == null) {
-        // the contrary should never happened as it is an HTTP call with no socketio transaction related
-        message.failEmission(
-            "User message failed emission. Received error through onSocketioError with data: $data");
-        waitingForMojo = false;
-        notifyListeners();
-        return;
-      }
     } else {
       super.onSocketioError(data);
     }
-  }
-
-  Future<bool> acceptTaskToolExecution() async {
-    int taskToolExecutionPk = messages[0].taskToolExecutionPk!;
-    messages[0].taskToolExecutionAcceptedByUser = true;
-    UserMessage message =
-        UserMessage(text: "OK", taskToolExecutionPk: taskToolExecutionPk);
-    addMessageToLocalList(message);
-    Map<String, dynamic>? accepted =
-        await _sendTaskTookExecutionAcceptation(taskToolExecutionPk);
-    if (accepted == null) return false;
-    message.messagePk = accepted['message_pk'];
-    return true;
-  }
-
-  void refuseTaskToolExecution() {
-    messages[0].taskToolExecutionAcceptedByUser = false;
-    notifyListeners();
-    return;
-  }
-
-  Future<Map<String, dynamic>?> _sendTaskTookExecutionAcceptation(
-      int taskToolExecutionPk) async {
-    return await post(
-        service: 'task_tool_execution',
-        body: {"task_tool_execution_pk": taskToolExecutionPk});
   }
 
   final StreamController<bool> draftStarted = StreamController.broadcast();

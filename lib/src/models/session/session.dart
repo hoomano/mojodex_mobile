@@ -189,7 +189,6 @@ class Session extends ChangeNotifier with HttpCaller {
   ///     sender: mojo,
   ///     message: {
   ///       text: Please provide me with the information about the meeting, such as the date, time, attendees, and key points discussed, so I can help you prepare the meeting minutes. Is there any additional information you'd like to include?,
-  ///       tool_execution_fk: 6159
   ///     },
   ///     audio: true
   ///   }
@@ -296,7 +295,9 @@ class Session extends ChangeNotifier with HttpCaller {
 
   @protected
   Future<Map<String, dynamic>?> sendUserMessage(UserMessage message,
-      {int retry = 3, String origin = 'home_chat'}) async {
+      {int retry = 3,
+      String origin = 'home_chat',
+      int? userTaskExecutionPk}) async {
     try {
       String service = "user_message";
       Map<String, dynamic> formData = {
@@ -310,6 +311,9 @@ class Session extends ChangeNotifier with HttpCaller {
       if (!message.hasAudio) {
         // for auto-send message for example
         formData['text'] = message.text;
+      }
+      if (userTaskExecutionPk != null) {
+        formData['user_task_execution_pk'] = userTaskExecutionPk.toString();
       }
 
       Map<String, dynamic>? response;
@@ -330,7 +334,9 @@ class Session extends ChangeNotifier with HttpCaller {
             await Future.delayed(const Duration(seconds: 4));
             logger.info("_sendUserMessage - retry ${retry - 1}");
             return await sendUserMessage(message,
-                retry: retry - 1, origin: origin);
+                retry: retry - 1,
+                origin: origin,
+                userTaskExecutionPk: userTaskExecutionPk);
           } else {
             try {
               return error.response?.data as Map<String, dynamic>;
@@ -351,7 +357,9 @@ class Session extends ChangeNotifier with HttpCaller {
               "🔁 _sendUserMessage: received response 'processing' - retry ${retry - 1}");
           await Future.delayed(const Duration(seconds: 4));
           return await sendUserMessage(message,
-              retry: retry - 1, origin: origin);
+              retry: retry - 1,
+              origin: origin,
+              userTaskExecutionPk: userTaskExecutionPk);
         }
       }
       return response;

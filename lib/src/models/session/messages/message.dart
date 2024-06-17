@@ -30,13 +30,6 @@ abstract class Message extends ChangeNotifier with HttpCaller {
     _hasMessagePk = true;
   }
 
-  /// If any, references to taskToolExecutionPk
-  int? taskToolExecutionPk;
-
-  /// If any reference to taskToolExecutionPk, has it been accepted by user ?
-  /// Null until user did not approve or reject
-  bool? taskToolExecutionAcceptedByUser;
-
   /// Message's sender
   late MessageSender sender;
 
@@ -72,10 +65,7 @@ abstract class Message extends ChangeNotifier with HttpCaller {
   AudioManager? audioManager;
 
   Message(
-      {required this.sender,
-      this.hasAudio = false,
-      this.autoPlay = false,
-      this.taskToolExecutionPk = null}) {
+      {required this.sender, this.hasAudio = false, this.autoPlay = false}) {
     if (hasAudio) {
       audioManager = AudioManager(getAudioFile: () async => localAudioPath);
     }
@@ -88,7 +78,6 @@ abstract class Message extends ChangeNotifier with HttpCaller {
     ///     sender: mojo,
     ///     message: {
     ///       text: Please provide me with the information about the meeting, such as the date, time, attendees, and key points discussed, so I can help you prepare the meeting minutes. Is there any additional information you'd like to include?,
-    ///       tool_execution_fk: 6159
     ///     },
     ///     audio: true
     ///   }
@@ -101,9 +90,6 @@ abstract class Message extends ChangeNotifier with HttpCaller {
       hasTranscript = true;
     } else {
       hasTranscript = false;
-    }
-    if (data['message'].containsKey('task_tool_execution_fk')) {
-      taskToolExecutionPk = data['message']['task_tool_execution_fk'];
     }
 
     hasAudio = data['audio'];
