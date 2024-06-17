@@ -85,7 +85,6 @@ class _TaskCardState extends State<TaskCard> {
                       setState(() {
                         processing = true;
                       });
-                      await Future.delayed(Duration(seconds: 30));
                       UserTaskExecution? newUserTaskExecution =
                           await widget.userTask.newExecution(
                         userTaskExecutionFk: widget.userTaskExecutionFk,
