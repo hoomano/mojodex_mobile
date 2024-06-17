@@ -17,43 +17,35 @@ dependencies:
   flutter_dotenv: ^5.1.0
   colorful_safe_area: ^1.0.0
   logging: ^1.2.0
-  http: ^1.1.0
+  http: ^1.2.1
   lazy_load_scrollview: ^1.3.0
   dotted_border: ^2.1.0
   dropdown_button2: ^2.3.9
   provider: ^6.0.5
-  shared_preferences: ^2.2.2
-  share_plus: ^7.2.2
+  shared_preferences: ^2.2.3
+  share_plus: ^9.0.0
   loading_animation_widget: ^1.2.0+4
-  audio_waveforms: ^1.0.4
+  audio_waveforms: ^1.0.5
   path_provider: ^2.1.2
   socket_io_client: ^2.0.3+1
-  wakelock_plus: ^1.1.3
+  wakelock_plus: ^1.2.5
   permission_handler: ^11.0.1
-  timelines: ^0.1.0
-  dio: ^5.3.3
+  dio: ^5.4.3+1
   easy_localization: ^3.0.3
-  webview_flutter: ^4.4.1
   cached_network_image: ^3.3.0
-  animated_snack_bar: ^0.4.0
-  mailto: ^2.0.0
   url_launcher: ^6.1.14
   flutter_local_notifications: ^17.1.2
-  firebase_core: ^2.19.0
-  firebase_messaging: ^14.7.1
-  badges: ^3.1.2
-  in_app_purchase: ^3.1.11
-  collection: ^1.17.2
-  flutter_slidable: ^3.0.1
+  firebase_core: ^3.1.0
+  firebase_messaging: ^15.0.1
+  collection: ^1.18.0
   go_router: ^14.1.1
   google_sign_in: ^6.2.1
-  sign_in_with_apple: ^5.0.0
+  sign_in_with_apple: ^6.1.1
   skeletonizer: ^1.3.0
 
 dev_dependencies:
-  flutter_native_splash: 2.3.9
+  flutter_native_splash:  2.4.0
   flutter_launcher_icons: ^0.13.1
-  cupertino_icons: ^1.0.2
   flutter_lints: ^4.0.0
 
 flutter:
