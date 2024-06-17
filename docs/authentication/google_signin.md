@@ -1,12 +1,20 @@
 # Adding Google Sign-In to your app
 
-## Prerequisites
+
+## Backend configuration
+
+**REQUIREMENT:**
+For development, you need to run a backend version of Mojodex. See [README](../../README.md) for more info.
+
 Your backend must be configured to accept Google Sign-In by registering in environment variables the following values:
 - `GOOGLE_CLIENT_ID`: The client ID of your Google Sign-In API.
 - `GOOGLE_CLIENT_SECRET`: The client secret of your Google Sign-In API.
 
-Those values can be obtained by registering you project on google cloud console (https://console.cloud.google.com/).
-Then in "APIs and services" -> Credentials, you can create a new OAuth 2.0 client ID of type "Web application" for your server.
+> 👀 look at your `.env` configuration to find those values.
+
+If not present, you have to configure your backend server accordingly:
+* Those values can be obtained by registering you project on google cloud console (https://console.cloud.google.com/).
+* Then in "APIs and services" -> Credentials, you can create a new OAuth 2.0 client ID of type "Web application" for your server.
 
 ## Configure consent screen
 In Google cloud console, in "APIs and services" go to "OAuth consent screen".
@@ -20,7 +28,7 @@ If you are planning to publish your app, choose the “External” option and cl
 ### Google Cloud console
 In Google cloud console, in "APIs and services" go to "Credentials".
 Create a new OAuth 2.0 client ID of type "iOS" for your app.
-Fill in the required fields including bundleIS and click "Create".
+Fill in the required fields including bundleID and click "Create".
 Copy the provided client ID. It is your GOOGLE_IOS_CLIENT_ID.
 
 ### Mojodex project
@@ -50,6 +58,13 @@ GOOGLE_IOS_CLIENT_ID=
 GOOGLE_SERVER_CLIENT_ID=
 ``` 
 GOOGLE_SERVER_CLIENT_ID being the environment variable you set in your backend.
+
+### Try it!
+
+At this stage, you can try using the Google SignIn for a iOS device.
+
+> flutter run
+
 
 ## Android configuration
 ### Sign your app
