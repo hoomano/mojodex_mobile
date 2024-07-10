@@ -57,6 +57,10 @@ android/app/build.gradle
 android/app/src/main/kotlin/com/example/mojodex/mojodexmobile/MainActivity.kt
 android/build.gradle
 android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+android/gradle
+android/.gradle
+android/gradlew
+android/gradlew.bat
 assets/.env
 ios/Flutter/flutter_export_environment.sh
 ios/Flutter/Flutter.podspec
